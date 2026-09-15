@@ -3,17 +3,17 @@
   "channel": "preview",
   "applicationId": "dev.prosto.mobile",
   "versionName": "0.1.0",
-  "versionCode": 16,
+  "versionCode": 18,
   "minSdk": 24,
   "abis": [
     "arm64-v8a"
   ],
   "signerSha256": "2fbb9408998038ad377eb28339908fbf59e643788f197a3aea466aad009d482a",
-  "sha256": "0ee3165814b50f7b31706b32485c3d66db0e7b71e69a486b1830ca4a0a6dc05b",
+  "sha256": "0a7a3b0704c4076c06df637f5327164f8533d2078bc8c30310cb9d7ff737306e",
   "size": 29011416,
-  "apkUrl": "https://github.com/bsafronov/prosto-releases/releases/download/android-candidate-16/prosto-android.apk",
-  "releaseUrl": "https://github.com/bsafronov/prosto-releases/releases/tag/android-candidate-16",
-  "sourceRevision": "d0c4cccaa1b10b2916d22157999f20e66acaa01e",
+  "apkUrl": "https://github.com/bsafronov/prosto-releases/releases/download/android-candidate-18/prosto-android.apk",
+  "releaseUrl": "https://github.com/bsafronov/prosto-releases/releases/tag/android-candidate-18",
+  "sourceRevision": "37c035478817b8ea48335311127299fe071f8895",
   "publicApiBaseline": "0e56f5cd188bab653454d546515a8e0e2fc6de8f",
   "toolchain": {
     "node": "22.22.2",
