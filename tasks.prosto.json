@@ -1,0 +1,1855 @@
+{
+  "actions": {
+    "save": {
+      "requestType": "TaskUpdate",
+      "resultType": "Task",
+      "expectedFailures": ["resource-deleted"],
+      "steps": [
+        {
+          "kind": "set-local",
+          "name": "current",
+          "value": {
+            "$": "record-select",
+            "collection": "tasks",
+            "identity": "id",
+            "key": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "maximum": 50000
+          }
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "$": "equals",
+            "left": {
+              "$": "ref",
+              "path": "local.current"
+            },
+            "right": null
+          },
+          "then": [
+            {
+              "kind": "return",
+              "outcome": "failed",
+              "code": "resource-deleted"
+            }
+          ],
+          "else": []
+        },
+        {
+          "kind": "commit-state",
+          "value": {
+            "tasks": {
+              "$": "record-update",
+              "collection": "tasks",
+              "identity": "id",
+              "key": {
+                "$": "ref",
+                "path": "input.id"
+              },
+              "maximum": 50000,
+              "changes": {
+                "completed": {
+                  "$": "ref",
+                  "path": "input.completed"
+                },
+                "dueAt": {
+                  "$": "ref",
+                  "path": "input.dueAt"
+                },
+                "notes": {
+                  "$": "ref",
+                  "path": "input.notes"
+                },
+                "priority": {
+                  "$": "ref",
+                  "path": "input.priority"
+                },
+                "tags": {
+                  "$": "ref",
+                  "path": "input.tags"
+                },
+                "title": {
+                  "$": "ref",
+                  "path": "input.title"
+                },
+                "changed": {
+                  "$": "if",
+                  "condition": {
+                    "$": "and",
+                    "values": [
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.current.completed"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.completed"
+                        }
+                      },
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.current.dueAt"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.dueAt"
+                        }
+                      },
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.current.notes"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.notes"
+                        }
+                      },
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.current.priority"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.priority"
+                        }
+                      },
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.current.tags"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.tags"
+                        }
+                      },
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.current.title"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.title"
+                        }
+                      }
+                    ]
+                  },
+                  "then": {
+                    "$": "ref",
+                    "path": "local.current.changed"
+                  },
+                  "else": {
+                    "$": "ref",
+                    "path": "mutation.instant"
+                  }
+                }
+              }
+            },
+            "selectedTask": {
+              "$": "ref",
+              "path": "state.selectedTask"
+            }
+          }
+        },
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "record-select",
+            "collection": "tasks",
+            "identity": "id",
+            "key": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "maximum": 50000
+          }
+        }
+      ]
+    },
+    "delete": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "id": "string"
+        }
+      },
+      "resultType": "null",
+      "expectedFailures": ["resource-deleted"],
+      "steps": [
+        {
+          "id": "check-resource-deleted",
+          "kind": "branch",
+          "condition": {
+            "$": "equals",
+            "left": {
+              "$": "record-select",
+              "collection": "tasks",
+              "identity": "id",
+              "key": {
+                "$": "ref",
+                "path": "input.id"
+              },
+              "maximum": 50000
+            },
+            "right": null
+          },
+          "then": [
+            {
+              "id": "resource-deleted",
+              "kind": "return",
+              "outcome": "failed",
+              "code": "resource-deleted"
+            }
+          ],
+          "else": []
+        },
+        {
+          "id": "save-tasks",
+          "kind": "commit-state",
+          "value": {
+            "tasks": {
+              "$": "record-delete",
+              "collection": "tasks",
+              "identity": "id",
+              "key": {
+                "$": "ref",
+                "path": "input.id"
+              },
+              "maximum": 50000
+            },
+            "selectedTask": {
+              "$": "ref",
+              "path": "state.selectedTask"
+            }
+          }
+        },
+        {
+          "id": "return-task",
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": null
+        }
+      ]
+    },
+    "addTag": {
+      "requestType": "TagRequest",
+      "resultType": "Task",
+      "expectedFailures": ["resource-deleted", "invalid-tag", "tag-limit"],
+      "steps": [
+        {
+          "kind": "set-local",
+          "name": "current",
+          "value": {
+            "$": "record-select",
+            "collection": "tasks",
+            "identity": "id",
+            "key": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "maximum": 50000
+          }
+        },
+        {
+          "id": "check-resource-deleted",
+          "kind": "branch",
+          "condition": {
+            "$": "equals",
+            "left": {
+              "$": "record-select",
+              "collection": "tasks",
+              "identity": "id",
+              "key": {
+                "$": "ref",
+                "path": "input.id"
+              },
+              "maximum": 50000
+            },
+            "right": null
+          },
+          "then": [
+            {
+              "id": "resource-deleted",
+              "kind": "return",
+              "outcome": "failed",
+              "code": "resource-deleted"
+            }
+          ],
+          "else": []
+        },
+        {
+          "id": "check-invalid-tag",
+          "kind": "branch",
+          "condition": {
+            "$": "equals",
+            "left": {
+              "$": "trim",
+              "value": {
+                "$": "ref",
+                "path": "input.tag"
+              }
+            },
+            "right": ""
+          },
+          "then": [
+            {
+              "id": "invalid-tag",
+              "kind": "return",
+              "outcome": "failed",
+              "code": "invalid-tag"
+            }
+          ],
+          "else": []
+        },
+        {
+          "id": "check-tag-limit",
+          "kind": "branch",
+          "condition": {
+            "$": "and",
+            "values": [
+              {
+                "$": "not",
+                "value": {
+                  "$": "any",
+                  "source": {
+                    "$": "ref",
+                    "path": "local.current.tags"
+                  },
+                  "item": "tag",
+                  "predicate": {
+                    "$": "equals",
+                    "left": {
+                      "$": "ref",
+                      "path": "local.tag"
+                    },
+                    "right": {
+                      "$": "trim",
+                      "value": {
+                        "$": "ref",
+                        "path": "input.tag"
+                      }
+                    }
+                  },
+                  "maximum": 32
+                }
+              },
+              {
+                "$": "not",
+                "value": {
+                  "$": "equals",
+                  "left": {
+                    "$": "take",
+                    "source": {
+                      "$": "ref",
+                      "path": "local.current.tags"
+                    },
+                    "count": 31,
+                    "maximum": 50000
+                  },
+                  "right": {
+                    "$": "ref",
+                    "path": "local.current.tags"
+                  }
+                }
+              }
+            ]
+          },
+          "then": [
+            {
+              "id": "tag-limit",
+              "kind": "return",
+              "outcome": "failed",
+              "code": "tag-limit"
+            }
+          ],
+          "else": []
+        },
+        {
+          "id": "updated-task",
+          "kind": "set-local",
+          "name": "updated",
+          "value": {
+            "completed": {
+              "$": "ref",
+              "path": "local.current.completed"
+            },
+            "dueAt": {
+              "$": "ref",
+              "path": "local.current.dueAt"
+            },
+            "id": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "notes": {
+              "$": "ref",
+              "path": "local.current.notes"
+            },
+            "priority": {
+              "$": "ref",
+              "path": "local.current.priority"
+            },
+            "tags": {
+              "$": "if",
+              "condition": {
+                "$": "any",
+                "source": {
+                  "$": "ref",
+                  "path": "local.current.tags"
+                },
+                "item": "tag",
+                "predicate": {
+                  "$": "equals",
+                  "left": {
+                    "$": "ref",
+                    "path": "local.tag"
+                  },
+                  "right": {
+                    "$": "trim",
+                    "value": {
+                      "$": "ref",
+                      "path": "input.tag"
+                    }
+                  }
+                },
+                "maximum": 32
+              },
+              "then": {
+                "$": "ref",
+                "path": "local.current.tags"
+              },
+              "else": {
+                "$": "prepend",
+                "value": {
+                  "$": "trim",
+                  "value": {
+                    "$": "ref",
+                    "path": "input.tag"
+                  }
+                },
+                "source": {
+                  "$": "ref",
+                  "path": "local.current.tags"
+                },
+                "maximum": 32
+              }
+            },
+            "title": {
+              "$": "ref",
+              "path": "local.current.title"
+            },
+            "changed": {
+              "$": "if",
+              "condition": {
+                "$": "equals",
+                "left": {
+                  "$": "if",
+                  "condition": {
+                    "$": "any",
+                    "source": {
+                      "$": "ref",
+                      "path": "local.current.tags"
+                    },
+                    "item": "tag",
+                    "predicate": {
+                      "$": "equals",
+                      "left": {
+                        "$": "ref",
+                        "path": "local.tag"
+                      },
+                      "right": {
+                        "$": "trim",
+                        "value": {
+                          "$": "ref",
+                          "path": "input.tag"
+                        }
+                      }
+                    },
+                    "maximum": 32
+                  },
+                  "then": {
+                    "$": "ref",
+                    "path": "local.current.tags"
+                  },
+                  "else": {
+                    "$": "prepend",
+                    "value": {
+                      "$": "trim",
+                      "value": {
+                        "$": "ref",
+                        "path": "input.tag"
+                      }
+                    },
+                    "source": {
+                      "$": "ref",
+                      "path": "local.current.tags"
+                    },
+                    "maximum": 32
+                  }
+                },
+                "right": {
+                  "$": "ref",
+                  "path": "local.current.tags"
+                }
+              },
+              "then": {
+                "$": "ref",
+                "path": "local.current.changed"
+              },
+              "else": {
+                "$": "ref",
+                "path": "mutation.instant"
+              }
+            }
+          }
+        },
+        {
+          "id": "save-tasks",
+          "kind": "commit-state",
+          "value": {
+            "tasks": {
+              "$": "record-update",
+              "collection": "tasks",
+              "identity": "id",
+              "key": {
+                "$": "ref",
+                "path": "input.id"
+              },
+              "maximum": 50000,
+              "changes": {
+                "$": "ref",
+                "path": "local.updated"
+              }
+            },
+            "selectedTask": {
+              "$": "ref",
+              "path": "state.selectedTask"
+            }
+          }
+        },
+        {
+          "id": "return-task",
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "ref",
+            "path": "local.updated"
+          }
+        }
+      ]
+    },
+    "removeTag": {
+      "requestType": "TagRequest",
+      "resultType": "Task",
+      "expectedFailures": ["resource-deleted", "invalid-tag"],
+      "steps": [
+        {
+          "kind": "set-local",
+          "name": "current",
+          "value": {
+            "$": "record-select",
+            "collection": "tasks",
+            "identity": "id",
+            "key": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "maximum": 50000
+          }
+        },
+        {
+          "id": "check-resource-deleted",
+          "kind": "branch",
+          "condition": {
+            "$": "equals",
+            "left": {
+              "$": "record-select",
+              "collection": "tasks",
+              "identity": "id",
+              "key": {
+                "$": "ref",
+                "path": "input.id"
+              },
+              "maximum": 50000
+            },
+            "right": null
+          },
+          "then": [
+            {
+              "id": "resource-deleted",
+              "kind": "return",
+              "outcome": "failed",
+              "code": "resource-deleted"
+            }
+          ],
+          "else": []
+        },
+        {
+          "id": "check-invalid-tag",
+          "kind": "branch",
+          "condition": {
+            "$": "equals",
+            "left": {
+              "$": "trim",
+              "value": {
+                "$": "ref",
+                "path": "input.tag"
+              }
+            },
+            "right": ""
+          },
+          "then": [
+            {
+              "id": "invalid-tag",
+              "kind": "return",
+              "outcome": "failed",
+              "code": "invalid-tag"
+            }
+          ],
+          "else": []
+        },
+        {
+          "id": "updated-task",
+          "kind": "set-local",
+          "name": "updated",
+          "value": {
+            "completed": {
+              "$": "ref",
+              "path": "local.current.completed"
+            },
+            "dueAt": {
+              "$": "ref",
+              "path": "local.current.dueAt"
+            },
+            "id": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "notes": {
+              "$": "ref",
+              "path": "local.current.notes"
+            },
+            "priority": {
+              "$": "ref",
+              "path": "local.current.priority"
+            },
+            "tags": {
+              "$": "filter",
+              "source": {
+                "$": "ref",
+                "path": "local.current.tags"
+              },
+              "item": "tag",
+              "predicate": {
+                "$": "not",
+                "value": {
+                  "$": "equals",
+                  "left": {
+                    "$": "ref",
+                    "path": "local.tag"
+                  },
+                  "right": {
+                    "$": "trim",
+                    "value": {
+                      "$": "ref",
+                      "path": "input.tag"
+                    }
+                  }
+                }
+              },
+              "maximum": 32
+            },
+            "title": {
+              "$": "ref",
+              "path": "local.current.title"
+            },
+            "changed": {
+              "$": "if",
+              "condition": {
+                "$": "equals",
+                "left": {
+                  "$": "filter",
+                  "source": {
+                    "$": "ref",
+                    "path": "local.current.tags"
+                  },
+                  "item": "tag",
+                  "predicate": {
+                    "$": "not",
+                    "value": {
+                      "$": "equals",
+                      "left": {
+                        "$": "ref",
+                        "path": "local.tag"
+                      },
+                      "right": {
+                        "$": "trim",
+                        "value": {
+                          "$": "ref",
+                          "path": "input.tag"
+                        }
+                      }
+                    }
+                  },
+                  "maximum": 32
+                },
+                "right": {
+                  "$": "ref",
+                  "path": "local.current.tags"
+                }
+              },
+              "then": {
+                "$": "ref",
+                "path": "local.current.changed"
+              },
+              "else": {
+                "$": "ref",
+                "path": "mutation.instant"
+              }
+            }
+          }
+        },
+        {
+          "id": "save-tasks",
+          "kind": "commit-state",
+          "value": {
+            "tasks": {
+              "$": "record-update",
+              "collection": "tasks",
+              "identity": "id",
+              "key": {
+                "$": "ref",
+                "path": "input.id"
+              },
+              "maximum": 50000,
+              "changes": {
+                "$": "ref",
+                "path": "local.updated"
+              }
+            },
+            "selectedTask": {
+              "$": "ref",
+              "path": "state.selectedTask"
+            }
+          }
+        },
+        {
+          "id": "return-task",
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "ref",
+            "path": "local.updated"
+          }
+        }
+      ]
+    },
+    "selectTask": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "id": "string"
+        }
+      },
+      "steps": [
+        {
+          "kind": "set-local",
+          "name": "current",
+          "value": {
+            "$": "record-select",
+            "collection": "tasks",
+            "identity": "id",
+            "key": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "maximum": 50000
+          }
+        },
+        {
+          "id": "save-selection",
+          "kind": "commit-state",
+          "value": {
+            "selectedTask": {
+              "dueAt": {
+                "$": "ref",
+                "path": "local.current.dueAt"
+              },
+              "id": {
+                "$": "ref",
+                "path": "input.id"
+              },
+              "priority": {
+                "$": "ref",
+                "path": "local.current.priority"
+              },
+              "tags": {
+                "$": "ref",
+                "path": "local.current.tags"
+              },
+              "title": {
+                "$": "ref",
+                "path": "local.current.title"
+              }
+            },
+            "tasks": {
+              "$": "ref",
+              "path": "state.tasks"
+            }
+          }
+        },
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "record-select",
+            "collection": "tasks",
+            "identity": "id",
+            "key": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "maximum": 50000
+          }
+        }
+      ],
+      "resultType": "Task"
+    },
+    "selected": {
+      "concurrency": "parallel",
+      "expectedFailures": ["task-unavailable"],
+      "resultType": "SelectedTask",
+      "steps": [
+        {
+          "condition": {
+            "$": "equals",
+            "left": {
+              "$": "ref",
+              "path": "state.selectedTask"
+            },
+            "right": null
+          },
+          "else": [
+            {
+              "id": "selected-record-exists",
+              "kind": "branch",
+              "condition": {
+                "$": "any",
+                "source": {
+                  "$": "ref",
+                  "path": "state.tasks"
+                },
+                "item": "task",
+                "predicate": {
+                  "$": "equals",
+                  "left": {
+                    "$": "ref",
+                    "path": "local.task.id"
+                  },
+                  "right": {
+                    "$": "ref",
+                    "path": "state.selectedTask.id"
+                  }
+                },
+                "maximum": 50000
+              },
+              "then": [
+                {
+                  "id": "read-selected-record",
+                  "kind": "set-local",
+                  "name": "selectedRecord",
+                  "value": {
+                    "$": "pick",
+                    "from": {
+                      "$": "filter",
+                      "source": {
+                        "$": "ref",
+                        "path": "state.tasks"
+                      },
+                      "item": "task",
+                      "predicate": {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.task.id"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "state.selectedTask.id"
+                        }
+                      },
+                      "maximum": 50000
+                    },
+                    "path": "0"
+                  }
+                },
+                {
+                  "id": "return-selection",
+                  "kind": "return",
+                  "outcome": "succeeded",
+                  "value": {
+                    "id": {
+                      "$": "ref",
+                      "path": "local.selectedRecord.id"
+                    },
+                    "title": {
+                      "$": "ref",
+                      "path": "local.selectedRecord.title"
+                    },
+                    "dueAt": {
+                      "$": "ref",
+                      "path": "local.selectedRecord.dueAt"
+                    },
+                    "priority": {
+                      "$": "ref",
+                      "path": "local.selectedRecord.priority"
+                    },
+                    "tags": {
+                      "$": "ref",
+                      "path": "local.selectedRecord.tags"
+                    }
+                  }
+                }
+              ],
+              "else": [
+                {
+                  "id": "selection-deleted",
+                  "kind": "return",
+                  "outcome": "failed",
+                  "code": "task-unavailable"
+                }
+              ]
+            }
+          ],
+          "id": "selection-available",
+          "kind": "branch",
+          "then": [
+            {
+              "code": "task-unavailable",
+              "id": "selection-missing",
+              "kind": "return",
+              "outcome": "failed"
+            }
+          ]
+        }
+      ]
+    },
+    "content": {
+      "steps": [
+        {
+          "id": "reminder-scan",
+          "kind": "observe",
+          "observation": {
+            "completedField": "completed",
+            "contributionId": "taskDetail",
+            "dueField": "dueAt",
+            "items": {
+              "$": "ref",
+              "path": "state.tasks"
+            },
+            "kind": "schedule-record-reminders",
+            "titleField": "title"
+          }
+        },
+        {
+          "id": "reminder-scan-complete",
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": null
+        }
+      ]
+    },
+    "complete": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "id": "string"
+        }
+      },
+      "resultType": "Task",
+      "expectedFailures": ["resource-deleted"],
+      "steps": [
+        {
+          "kind": "set-local",
+          "name": "current",
+          "value": {
+            "$": "record-select",
+            "collection": "tasks",
+            "identity": "id",
+            "key": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "maximum": 50000
+          }
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "$": "equals",
+            "left": {
+              "$": "ref",
+              "path": "local.current"
+            },
+            "right": null
+          },
+          "then": [
+            {
+              "kind": "return",
+              "outcome": "failed",
+              "code": "resource-deleted"
+            }
+          ],
+          "else": []
+        },
+        {
+          "kind": "commit-state",
+          "value": {
+            "tasks": {
+              "$": "record-update",
+              "collection": "tasks",
+              "identity": "id",
+              "key": {
+                "$": "ref",
+                "path": "input.id"
+              },
+              "maximum": 50000,
+              "changes": {
+                "completed": true,
+                "changed": {
+                  "$": "if",
+                  "condition": {
+                    "$": "and",
+                    "values": [
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.current.completed"
+                        },
+                        "right": true
+                      }
+                    ]
+                  },
+                  "then": {
+                    "$": "ref",
+                    "path": "local.current.changed"
+                  },
+                  "else": {
+                    "$": "ref",
+                    "path": "mutation.instant"
+                  }
+                }
+              }
+            },
+            "selectedTask": {
+              "$": "ref",
+              "path": "state.selectedTask"
+            }
+          }
+        },
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "record-select",
+            "collection": "tasks",
+            "identity": "id",
+            "key": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "maximum": 50000
+          }
+        }
+      ]
+    },
+    "create": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "title": "string"
+        }
+      },
+      "resultType": "Task",
+      "expectedFailures": ["task-limit"],
+      "steps": [
+        {
+          "kind": "branch",
+          "condition": {
+            "$": "not",
+            "value": {
+              "$": "equals",
+              "left": {
+                "$": "take",
+                "source": {
+                  "$": "ref",
+                  "path": "state.tasks"
+                },
+                "count": 49999,
+                "maximum": 50000
+              },
+              "right": {
+                "$": "ref",
+                "path": "state.tasks"
+              }
+            }
+          },
+          "then": [
+            {
+              "kind": "return",
+              "outcome": "failed",
+              "code": "task-limit"
+            }
+          ],
+          "else": []
+        },
+        {
+          "kind": "set-local",
+          "name": "created",
+          "value": {
+            "id": {
+              "$": "ref",
+              "path": "mutation.identity"
+            },
+            "title": {
+              "$": "ref",
+              "path": "input.title"
+            },
+            "tags": [],
+            "changed": {
+              "$": "ref",
+              "path": "mutation.instant"
+            },
+            "notes": "",
+            "dueAt": null,
+            "priority": "normal",
+            "completed": false
+          }
+        },
+        {
+          "kind": "commit-state",
+          "value": {
+            "tasks": {
+              "$": "prepend",
+              "value": {
+                "$": "ref",
+                "path": "local.created"
+              },
+              "source": {
+                "$": "ref",
+                "path": "state.tasks"
+              },
+              "maximum": 50000
+            },
+            "selectedTask": {
+              "$": "ref",
+              "path": "state.selectedTask"
+            }
+          }
+        },
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "ref",
+            "path": "local.created"
+          }
+        }
+      ]
+    },
+    "query": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "search": "string",
+          "cursor": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "limit": "integer",
+          "filters": {
+            "kind": "object",
+            "members": {
+              "completed": {
+                "kind": "optional",
+                "value": {
+                  "kind": "array",
+                  "items": "boolean",
+                  "maximum": 64
+                }
+              },
+              "dueAt": {
+                "kind": "optional",
+                "value": {
+                  "kind": "array",
+                  "items": {
+                    "kind": "tagged",
+                    "variants": {
+                      "on": "string",
+                      "before": "string",
+                      "after": "string",
+                      "today": "null",
+                      "upcoming": "null",
+                      "absent": "null"
+                    }
+                  },
+                  "maximum": 64
+                }
+              },
+              "priority": {
+                "kind": "optional",
+                "value": {
+                  "kind": "array",
+                  "items": {
+                    "kind": "enum",
+                    "values": ["low", "normal", "high"]
+                  },
+                  "maximum": 64
+                }
+              },
+              "tags": {
+                "kind": "optional",
+                "value": {
+                  "kind": "array",
+                  "items": "string",
+                  "maximum": 64
+                }
+              }
+            }
+          }
+        }
+      },
+      "resultType": {
+        "kind": "object",
+        "members": {
+          "records": {
+            "kind": "array",
+            "items": "Task",
+            "maximum": 50
+          },
+          "cursor": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "complete": "boolean"
+        }
+      },
+      "steps": [
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "collection-query",
+            "collection": "tasks"
+          }
+        }
+      ]
+    },
+    "status": {
+      "resultType": {
+        "kind": "array",
+        "items": "Task",
+        "maximum": 50
+      },
+      "steps": [
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "take",
+            "source": {
+              "$": "filter",
+              "source": {
+                "$": "ref",
+                "path": "state.tasks"
+              },
+              "item": "task",
+              "predicate": {
+                "$": "equals",
+                "left": {
+                  "$": "ref",
+                  "path": "local.task.completed"
+                },
+                "right": false
+              },
+              "maximum": 50000
+            },
+            "count": 50,
+            "maximum": 50000
+          }
+        }
+      ]
+    }
+  },
+  "catalog": {
+    "categories": ["productivity"],
+    "license": "MIT",
+    "supportLink": "https://github.com/bsafronov/prosto-designer/issues",
+    "tags": ["tasks", "productivity"],
+    "description": "catalog.description",
+    "displayName": "catalog.displayName",
+    "releaseNotes": "catalog.releaseNotes",
+    "summary": "catalog.summary"
+  },
+  "contributions": {
+    "background": {
+      "optional": true,
+      "requirements": ["notifications", "background"],
+      "workflow": "content"
+    },
+    "commands": {
+      "quickAdd": {
+        "defaultHotkey": "Mod+Shift+Enter",
+        "operation": "create",
+        "title": "command.quickAdd",
+        "accessibilityLabel": "command.quickAdd.label"
+      },
+      "selectTask": {
+        "operation": "selectTask",
+        "title": "command.selectTask"
+      }
+    }
+  },
+  "id": "prosto/tasks",
+  "localization": {
+    "en": {
+      "records.status.incomplete": "Not completed",
+      "records.status.complete": "Completed",
+      "command.quickAdd": "Quick Add",
+      "command.quickAdd.label": "Create a task quickly",
+      "command.selectTask": "Select task",
+      "field.completed": "Completed",
+      "field.due": "Due date and time",
+      "field.notes": "Notes",
+      "field.priority": "Priority",
+      "field.tags": "Tags",
+      "field.title": "Title",
+      "task.detail": "Task details",
+      "task.detail.label": "Edit selected task",
+      "task.first": "Create your first task",
+      "tasks.completed": "Completed",
+      "tasks.empty": "No tasks here",
+      "tasks.inbox": "Inbox",
+      "tasks.navigation": "Task lists and tags",
+      "tasks.open": "Open Tasks",
+      "tasks.search": "Search tasks",
+      "tasks.tags": "Tags",
+      "tasks.title": "Tasks",
+      "tasks.today": "Today",
+      "tasks.today.status": "Today's task count",
+      "tasks.today.suffix": "tasks today",
+      "tasks.upcoming": "Upcoming",
+      "name": "Tasks",
+      "interactions.taskLists.title": "Tasks",
+      "interactions.taskLists.nodes.tasks.label": "Tasks",
+      "interactions.taskLists.nodes.tasks.sections.inbox.label": "Inbox",
+      "interactions.taskLists.nodes.tasks.sections.today.label": "Today",
+      "interactions.taskLists.nodes.tasks.sections.upcoming.label": "Upcoming",
+      "interactions.taskLists.nodes.tasks.sections.completed.label": "Completed",
+      "interactions.taskLists.nodes.newTitle.label": "New task title",
+      "interactions.taskLists.nodes.quickAdd.label": "Create task",
+      "interactions.taskLists.nodes.today.label": "Today status",
+      "interactions.taskDetail.title": "Task",
+      "interactions.taskDetail.nodes.back.label": "Task lists",
+      "interactions.taskDetail.nodes.title.label": "Title",
+      "interactions.taskDetail.nodes.notes.label": "Notes",
+      "interactions.taskDetail.nodes.dueAt.label": "Due date and time (YYYY-MM-DDTHH:mm)",
+      "interactions.taskDetail.nodes.priority.label": "Priority",
+      "interactions.taskDetail.nodes.priority.choices.low": "Low",
+      "interactions.taskDetail.nodes.priority.choices.normal": "Normal",
+      "interactions.taskDetail.nodes.priority.choices.high": "High",
+      "interactions.taskDetail.nodes.completed.label": "Completed",
+      "interactions.taskDetail.nodes.tags.label": "Tags",
+      "interactions.taskDetail.nodes.save.label": "Save task",
+      "interactions.taskDetail.nodes.complete.label": "Complete task",
+      "interactions.taskDetail.nodes.selectedTask.label": "Select task for other Plugins",
+      "interactions.taskDetail.nodes.selection.label": "Selected task",
+      "interactions.taskDetail.nodes.delete.label": "Delete task",
+      "interactions.todayStatus.title": "Task status",
+      "interactions.todayStatus.nodes.today.label": "Tasks due today",
+      "interactions.todayStatus.nodes.today.sections.today.label": "Today",
+      "interactions.todayStatus.nodes.back.label": "Task lists",
+      "catalog.description": "Capture and organize tasks in Inbox, Today, Upcoming, Completed, and tags.",
+      "catalog.displayName": "Tasks",
+      "catalog.releaseNotes": "Initial curated Tasks release.",
+      "catalog.summary": "Focused personal task management.",
+      "collections.tasks.completed": "Completed",
+      "collections.tasks.dueAt": "Due date",
+      "collections.tasks.id": "Identity",
+      "collections.tasks.notes": "Notes",
+      "collections.tasks.priority": "Priority",
+      "collections.tasks.tags": "Tags",
+      "collections.tasks.title": "Title",
+      "collections.tasks.changed": "Changed",
+      "collections.tasks.label": "Tasks",
+      "records.tags.empty": "No tags",
+      "records.noDueDate": "No due date"
+    },
+    "ru": {
+      "records.status.incomplete": "Не выполнено",
+      "records.status.complete": "Выполнено",
+      "command.quickAdd": "Быстрое добавление",
+      "command.quickAdd.label": "Быстро создать задачу",
+      "command.selectTask": "Выбрать задачу",
+      "field.completed": "Завершённые",
+      "field.due": "Дата и время срока",
+      "field.notes": "Заметки",
+      "field.priority": "Приоритет",
+      "field.tags": "Теги",
+      "field.title": "Название",
+      "task.detail": "Сведения о задаче",
+      "task.detail.label": "Изменить выбранную задачу",
+      "task.first": "Создайте первую задачу",
+      "tasks.completed": "Завершённые",
+      "tasks.empty": "Здесь нет задач",
+      "tasks.inbox": "Входящие",
+      "tasks.navigation": "Списки задач и теги",
+      "tasks.open": "Открыть задачи",
+      "tasks.search": "Поиск задач",
+      "tasks.tags": "Теги",
+      "tasks.title": "Задачи",
+      "tasks.today": "Сегодня",
+      "tasks.today.status": "Количество задач на сегодня",
+      "tasks.today.suffix": "задач на сегодня",
+      "tasks.upcoming": "Предстоящие",
+      "name": "Задачи",
+      "interactions.taskLists.title": "Задачи",
+      "interactions.taskLists.nodes.tasks.label": "Задачи",
+      "interactions.taskLists.nodes.tasks.sections.inbox.label": "Входящие",
+      "interactions.taskLists.nodes.tasks.sections.today.label": "Сегодня",
+      "interactions.taskLists.nodes.tasks.sections.upcoming.label": "Предстоящие",
+      "interactions.taskLists.nodes.tasks.sections.completed.label": "Завершённые",
+      "interactions.taskLists.nodes.newTitle.label": "Название новой задачи",
+      "interactions.taskLists.nodes.quickAdd.label": "Создать задачу",
+      "interactions.taskLists.nodes.today.label": "Статус на сегодня",
+      "interactions.taskDetail.title": "Задача",
+      "interactions.taskDetail.nodes.back.label": "Списки задач",
+      "interactions.taskDetail.nodes.title.label": "Название",
+      "interactions.taskDetail.nodes.notes.label": "Заметки",
+      "interactions.taskDetail.nodes.dueAt.label": "Дата и время срока (ГГГГ-ММ-ДДTЧЧ:мм)",
+      "interactions.taskDetail.nodes.priority.label": "Приоритет",
+      "interactions.taskDetail.nodes.priority.choices.low": "Низкий",
+      "interactions.taskDetail.nodes.priority.choices.normal": "Обычный",
+      "interactions.taskDetail.nodes.priority.choices.high": "Высокий",
+      "interactions.taskDetail.nodes.completed.label": "Завершённые",
+      "interactions.taskDetail.nodes.tags.label": "Теги",
+      "interactions.taskDetail.nodes.save.label": "Сохранить задачу",
+      "interactions.taskDetail.nodes.complete.label": "Завершить задачу",
+      "interactions.taskDetail.nodes.selectedTask.label": "Выбрать задачу для других плагинов",
+      "interactions.taskDetail.nodes.selection.label": "Выбранная задача",
+      "interactions.taskDetail.nodes.delete.label": "Удалить задачу",
+      "interactions.todayStatus.title": "Статус задач",
+      "interactions.todayStatus.nodes.today.label": "Задачи на сегодня",
+      "interactions.todayStatus.nodes.today.sections.today.label": "Сегодня",
+      "interactions.todayStatus.nodes.back.label": "Списки задач",
+      "catalog.description": "Создавайте и распределяйте задачи по разделам «Входящие», «Сегодня», «Предстоящие», «Завершённые» и тегам.",
+      "catalog.displayName": "Задачи",
+      "catalog.releaseNotes": "Первый выпуск каталожного плагина задач.",
+      "catalog.summary": "Удобное управление личными задачами.",
+      "collections.tasks.completed": "Выполнено",
+      "collections.tasks.dueAt": "Срок",
+      "collections.tasks.id": "Идентификатор",
+      "collections.tasks.notes": "Заметки",
+      "collections.tasks.priority": "Приоритет",
+      "collections.tasks.tags": "Теги",
+      "collections.tasks.title": "Название",
+      "collections.tasks.changed": "Изменено",
+      "collections.tasks.label": "Задачи",
+      "records.tags.empty": "Нет тегов",
+      "records.noDueDate": "Без срока"
+    }
+  },
+  "name": "name",
+  "state": {
+    "selectedTask": {
+      "default": null,
+      "type": {
+        "kind": "optional",
+        "value": "SelectedTask"
+      },
+      "scope": "instance"
+    },
+    "tasks": {
+      "default": [],
+      "type": {
+        "items": "Task",
+        "kind": "array",
+        "maximum": 50000
+      }
+    }
+  },
+  "version": "1.1.0",
+  "multiplicity": "many",
+  "interactions": {
+    "taskDetail": {
+      "role": "work",
+      "feature": "prosto/resource-interaction",
+      "title": "interactions.taskDetail.title",
+      "resource": {
+        "collection": "tasks",
+        "identity": "id",
+        "title": "title"
+      },
+      "nodes": {
+        "tags": {
+          "kind": "resource",
+          "label": "interactions.taskDetail.nodes.tags.label",
+          "field": "tags"
+        },
+        "selectedTask": {
+          "kind": "invoke",
+          "label": "interactions.taskDetail.nodes.selectedTask.label",
+          "action": "selectTask",
+          "bindings": {
+            "id": {
+              "source": "resource",
+              "field": "id"
+            }
+          },
+          "commit": {
+            "collection": "tasks"
+          }
+        },
+        "selection": {
+          "kind": "inspect",
+          "label": "interactions.taskDetail.nodes.selection.label",
+          "invocation": "selectedTask"
+        },
+        "title": {
+          "kind": "resource",
+          "label": "interactions.taskDetail.nodes.title.label",
+          "field": "title"
+        },
+        "notes": {
+          "kind": "resource",
+          "label": "interactions.taskDetail.nodes.notes.label",
+          "field": "notes"
+        },
+        "dueAt": {
+          "kind": "resource",
+          "label": "interactions.taskDetail.nodes.dueAt.label",
+          "field": "dueAt"
+        },
+        "priority": {
+          "kind": "resource",
+          "label": "interactions.taskDetail.nodes.priority.label",
+          "field": "priority"
+        },
+        "completed": {
+          "kind": "resource",
+          "label": "interactions.taskDetail.nodes.completed.label",
+          "field": "completed"
+        }
+      },
+      "capability": {
+        "kind": "document",
+        "content": "notes"
+      }
+    },
+    "todayStatus": {
+      "role": "monitor",
+      "capability": {
+        "kind": "monitor",
+        "values": ["status"],
+        "refresh": "load"
+      },
+      "feature": "prosto/resource-interaction",
+      "title": "interactions.todayStatus.title",
+      "source": {
+        "collection": "tasks"
+      },
+      "nodes": {
+        "load": {
+          "kind": "invoke",
+          "label": "interactions.todayStatus.title",
+          "action": "status",
+          "bindings": {
+            "value": {
+              "source": "preset",
+              "value": null
+            }
+          }
+        },
+        "status": {
+          "kind": "inspect",
+          "label": "interactions.todayStatus.title",
+          "invocation": "load"
+        }
+      }
+    }
+  },
+  "types": {
+    "SelectedTask": {
+      "kind": "object",
+      "members": {
+        "dueAt": {
+          "kind": "optional",
+          "value": "string"
+        },
+        "id": "string",
+        "priority": "string",
+        "tags": {
+          "items": "string",
+          "kind": "array",
+          "maximum": 32,
+          "constraint": "label-set"
+        },
+        "title": "string"
+      }
+    },
+    "Task": {
+      "kind": "object",
+      "members": {
+        "completed": "boolean",
+        "dueAt": {
+          "kind": "optional",
+          "value": "string"
+        },
+        "id": "string",
+        "notes": "string",
+        "priority": {
+          "kind": "enum",
+          "values": ["low", "normal", "high"]
+        },
+        "tags": {
+          "items": "string",
+          "kind": "array",
+          "maximum": 32,
+          "constraint": "label-set"
+        },
+        "title": "string",
+        "changed": {
+          "kind": "instant"
+        }
+      }
+    },
+    "TagRequest": {
+      "kind": "object",
+      "members": {
+        "id": "string",
+        "tag": "string"
+      }
+    },
+    "TaskUpdate": {
+      "kind": "object",
+      "members": {
+        "completed": "boolean",
+        "dueAt": {
+          "kind": "optional",
+          "value": "string"
+        },
+        "id": "string",
+        "notes": "string",
+        "priority": {
+          "kind": "enum",
+          "values": ["low", "normal", "high"]
+        },
+        "tags": {
+          "items": "string",
+          "kind": "array",
+          "maximum": 32,
+          "constraint": "label-set"
+        },
+        "title": "string"
+      }
+    }
+  },
+  "outputs": {
+    "selectedTask": {
+      "kind": "operation",
+      "action": "selected",
+      "purpose": "prosto.tasks.selected-task"
+    }
+  },
+  "defaultLanguage": "en",
+  "collections": {
+    "tasks": {
+      "presentation": {
+        "title": {
+          "field": "title"
+        },
+        "mainText": {
+          "field": "notes"
+        },
+        "metadata": [
+          {
+            "kind": "status",
+            "field": "completed",
+            "values": [
+              {
+                "value": false,
+                "label": {
+                  "message": "records.status.incomplete"
+                },
+                "tone": "neutral"
+              },
+              {
+                "value": true,
+                "label": {
+                  "message": "records.status.complete"
+                },
+                "tone": "positive"
+              }
+            ]
+          },
+          {
+            "kind": "status",
+            "field": "priority",
+            "values": [
+              {
+                "value": "low",
+                "label": {
+                  "message": "interactions.taskDetail.nodes.priority.choices.low"
+                },
+                "tone": "neutral"
+              },
+              {
+                "value": "normal",
+                "label": {
+                  "message": "interactions.taskDetail.nodes.priority.choices.normal"
+                },
+                "tone": "neutral"
+              },
+              {
+                "value": "high",
+                "label": {
+                  "message": "interactions.taskDetail.nodes.priority.choices.high"
+                },
+                "tone": "neutral"
+              }
+            ]
+          },
+          {
+            "kind": "label-set",
+            "field": "tags",
+            "empty": {
+              "message": "records.tags.empty"
+            }
+          },
+          {
+            "kind": "temporal",
+            "field": "dueAt",
+            "meaning": "local-datetime",
+            "empty": {
+              "message": "records.noDueDate"
+            }
+          }
+        ]
+      },
+      "label": "collections.tasks.label",
+      "recordType": "Task",
+      "fields": {
+        "completed": {
+          "label": "collections.tasks.completed",
+          "filterable": true,
+          "meaning": "prosto.record.completed"
+        },
+        "dueAt": {
+          "label": "collections.tasks.dueAt",
+          "filterable": true,
+          "meaning": "prosto.task.due-at",
+          "filterKind": "calendar-date"
+        },
+        "id": {
+          "label": "collections.tasks.id",
+          "generated": true,
+          "immutable": true
+        },
+        "notes": {
+          "label": "collections.tasks.notes",
+          "searchable": true
+        },
+        "priority": {
+          "label": "collections.tasks.priority",
+          "filterable": true,
+          "meaning": "prosto.task.priority"
+        },
+        "tags": {
+          "label": "collections.tasks.tags",
+          "searchable": true,
+          "filterable": true,
+          "meaning": "prosto.record.tag"
+        },
+        "title": {
+          "label": "collections.tasks.title",
+          "searchable": true
+        },
+        "changed": {
+          "label": "collections.tasks.changed",
+          "generated": true,
+          "immutable": true
+        }
+      },
+      "identity": "id",
+      "activityTime": "changed",
+      "title": "title",
+      "source": "tasks",
+      "pageSize": 50,
+      "open": "taskDetail",
+      "query": {
+        "action": "query",
+        "expectedFailures": []
+      },
+      "create": {
+        "action": "create",
+        "requestType": {
+          "kind": "object",
+          "members": {
+            "title": "string"
+          }
+        },
+        "resultType": "Task",
+        "expectedFailures": ["task-limit"]
+      },
+      "update": {
+        "action": "save",
+        "requestType": "TaskUpdate",
+        "resultType": "Task",
+        "expectedFailures": ["resource-deleted"]
+      },
+      "delete": {
+        "action": "delete",
+        "requestType": {
+          "kind": "object",
+          "members": {
+            "id": "string"
+          }
+        },
+        "resultType": "null",
+        "expectedFailures": ["resource-deleted"]
+      },
+      "actions": {
+        "complete": {
+          "action": "complete",
+          "requestType": {
+            "kind": "object",
+            "members": {
+              "id": "string"
+            }
+          },
+          "resultType": "Task",
+          "expectedFailures": ["resource-deleted"],
+          "label": "interactions.taskDetail.nodes.complete.label",
+          "intent": "change",
+          "inputFields": {}
+        }
+      }
+    }
+  }
+}

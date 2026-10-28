@@ -1,0 +1,1423 @@
+{
+  "actions": {
+    "quickStart": {
+      "requestType": {
+        "kind": "object",
+        "members": {}
+      },
+      "resultType": "CountdownRecord",
+      "expectedFailures": [],
+      "steps": [
+        {
+          "id": "save-session",
+          "kind": "commit-state",
+          "value": {
+            "sessions": {
+              "$": "ref",
+              "path": "state.sessions"
+            },
+            "history": {
+              "$": "ref",
+              "path": "state.history"
+            }
+          }
+        },
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "ref",
+            "path": "local.countdown"
+          }
+        }
+      ],
+      "countdown": {
+        "operation": "start",
+        "collection": "sessions",
+        "id": "main",
+        "durationMs": {
+          "$": "multiply",
+          "left": {
+            "$": "ref",
+            "path": "config.focusMinutes"
+          },
+          "right": 60000
+        },
+        "fields": {
+          "kind": "focus",
+          "selectedTask": {
+            "$": "pick",
+            "from": {
+              "$": "if",
+              "condition": {
+                "$": "any",
+                "source": {
+                  "$": "ref",
+                  "path": "state.sessions"
+                },
+                "item": "session",
+                "predicate": {
+                  "$": "and",
+                  "values": [
+                    {
+                      "$": "equals",
+                      "left": {
+                        "$": "ref",
+                        "path": "local.session.owner"
+                      },
+                      "right": {
+                        "$": "ref",
+                        "path": "input.owner"
+                      }
+                    },
+                    {
+                      "$": "equals",
+                      "left": {
+                        "$": "ref",
+                        "path": "local.session.countdownId"
+                      },
+                      "right": "main"
+                    }
+                  ]
+                },
+                "maximum": 1000
+              },
+              "then": {
+                "$": "pick",
+                "from": {
+                  "$": "filter",
+                  "source": {
+                    "$": "ref",
+                    "path": "state.sessions"
+                  },
+                  "item": "session",
+                  "predicate": {
+                    "$": "and",
+                    "values": [
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.session.owner"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.owner"
+                        }
+                      },
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.session.countdownId"
+                        },
+                        "right": "main"
+                      }
+                    ]
+                  },
+                  "maximum": 1000
+                },
+                "path": "0"
+              },
+              "else": {
+                "id": {
+                  "$": "ref",
+                  "path": "input.owner"
+                },
+                "owner": {
+                  "$": "ref",
+                  "path": "input.owner"
+                },
+                "sessionId": {
+                  "$": "ref",
+                  "path": "input.sessionId"
+                },
+                "phase": "idle",
+                "durationMs": {
+                  "$": "multiply",
+                  "left": {
+                    "$": "ref",
+                    "path": "config.focusMinutes"
+                  },
+                  "right": 60000
+                },
+                "remainingMs": {
+                  "$": "multiply",
+                  "left": {
+                    "$": "ref",
+                    "path": "config.focusMinutes"
+                  },
+                  "right": 60000
+                },
+                "referenceMs": {
+                  "$": "ref",
+                  "path": "input.nowMs"
+                },
+                "kind": "focus",
+                "selectedTask": null
+              }
+            },
+            "path": "selectedTask"
+          }
+        }
+      }
+    },
+    "startBreak": {
+      "requestType": {
+        "kind": "object",
+        "members": {}
+      },
+      "resultType": "CountdownRecord",
+      "expectedFailures": [],
+      "steps": [
+        {
+          "id": "save-session",
+          "kind": "commit-state",
+          "value": {
+            "sessions": {
+              "$": "ref",
+              "path": "state.sessions"
+            },
+            "history": {
+              "$": "ref",
+              "path": "state.history"
+            }
+          }
+        },
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "ref",
+            "path": "local.countdown"
+          }
+        }
+      ],
+      "countdown": {
+        "operation": "start",
+        "collection": "sessions",
+        "id": "main",
+        "durationMs": {
+          "$": "multiply",
+          "left": {
+            "$": "ref",
+            "path": "config.breakMinutes"
+          },
+          "right": 60000
+        },
+        "fields": {
+          "kind": "break",
+          "selectedTask": {
+            "$": "pick",
+            "from": {
+              "$": "if",
+              "condition": {
+                "$": "any",
+                "source": {
+                  "$": "ref",
+                  "path": "state.sessions"
+                },
+                "item": "session",
+                "predicate": {
+                  "$": "and",
+                  "values": [
+                    {
+                      "$": "equals",
+                      "left": {
+                        "$": "ref",
+                        "path": "local.session.owner"
+                      },
+                      "right": {
+                        "$": "ref",
+                        "path": "input.owner"
+                      }
+                    },
+                    {
+                      "$": "equals",
+                      "left": {
+                        "$": "ref",
+                        "path": "local.session.countdownId"
+                      },
+                      "right": "main"
+                    }
+                  ]
+                },
+                "maximum": 1000
+              },
+              "then": {
+                "$": "pick",
+                "from": {
+                  "$": "filter",
+                  "source": {
+                    "$": "ref",
+                    "path": "state.sessions"
+                  },
+                  "item": "session",
+                  "predicate": {
+                    "$": "and",
+                    "values": [
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.session.owner"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.owner"
+                        }
+                      },
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.session.countdownId"
+                        },
+                        "right": "main"
+                      }
+                    ]
+                  },
+                  "maximum": 1000
+                },
+                "path": "0"
+              },
+              "else": {
+                "id": {
+                  "$": "ref",
+                  "path": "input.owner"
+                },
+                "owner": {
+                  "$": "ref",
+                  "path": "input.owner"
+                },
+                "sessionId": {
+                  "$": "ref",
+                  "path": "input.sessionId"
+                },
+                "phase": "idle",
+                "durationMs": {
+                  "$": "multiply",
+                  "left": {
+                    "$": "ref",
+                    "path": "config.focusMinutes"
+                  },
+                  "right": 60000
+                },
+                "remainingMs": {
+                  "$": "multiply",
+                  "left": {
+                    "$": "ref",
+                    "path": "config.focusMinutes"
+                  },
+                  "right": 60000
+                },
+                "referenceMs": {
+                  "$": "ref",
+                  "path": "input.nowMs"
+                },
+                "kind": "focus",
+                "selectedTask": null
+              }
+            },
+            "path": "selectedTask"
+          }
+        }
+      }
+    },
+    "startCustom": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "minutes": "integer"
+        }
+      },
+      "resultType": "CountdownRecord",
+      "expectedFailures": [],
+      "steps": [
+        {
+          "id": "save-session",
+          "kind": "commit-state",
+          "value": {
+            "sessions": {
+              "$": "ref",
+              "path": "state.sessions"
+            },
+            "history": {
+              "$": "ref",
+              "path": "state.history"
+            }
+          }
+        },
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "ref",
+            "path": "local.countdown"
+          }
+        }
+      ],
+      "countdown": {
+        "operation": "start",
+        "collection": "sessions",
+        "id": "main",
+        "durationMs": {
+          "$": "multiply",
+          "left": {
+            "$": "ref",
+            "path": "input.minutes"
+          },
+          "right": 60000
+        },
+        "fields": {
+          "kind": "custom",
+          "selectedTask": {
+            "$": "pick",
+            "from": {
+              "$": "if",
+              "condition": {
+                "$": "any",
+                "source": {
+                  "$": "ref",
+                  "path": "state.sessions"
+                },
+                "item": "session",
+                "predicate": {
+                  "$": "and",
+                  "values": [
+                    {
+                      "$": "equals",
+                      "left": {
+                        "$": "ref",
+                        "path": "local.session.owner"
+                      },
+                      "right": {
+                        "$": "ref",
+                        "path": "input.owner"
+                      }
+                    },
+                    {
+                      "$": "equals",
+                      "left": {
+                        "$": "ref",
+                        "path": "local.session.countdownId"
+                      },
+                      "right": "main"
+                    }
+                  ]
+                },
+                "maximum": 1000
+              },
+              "then": {
+                "$": "pick",
+                "from": {
+                  "$": "filter",
+                  "source": {
+                    "$": "ref",
+                    "path": "state.sessions"
+                  },
+                  "item": "session",
+                  "predicate": {
+                    "$": "and",
+                    "values": [
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.session.owner"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.owner"
+                        }
+                      },
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.session.countdownId"
+                        },
+                        "right": "main"
+                      }
+                    ]
+                  },
+                  "maximum": 1000
+                },
+                "path": "0"
+              },
+              "else": {
+                "id": {
+                  "$": "ref",
+                  "path": "input.owner"
+                },
+                "owner": {
+                  "$": "ref",
+                  "path": "input.owner"
+                },
+                "sessionId": {
+                  "$": "ref",
+                  "path": "input.sessionId"
+                },
+                "phase": "idle",
+                "durationMs": {
+                  "$": "multiply",
+                  "left": {
+                    "$": "ref",
+                    "path": "config.focusMinutes"
+                  },
+                  "right": 60000
+                },
+                "remainingMs": {
+                  "$": "multiply",
+                  "left": {
+                    "$": "ref",
+                    "path": "config.focusMinutes"
+                  },
+                  "right": 60000
+                },
+                "referenceMs": {
+                  "$": "ref",
+                  "path": "input.nowMs"
+                },
+                "kind": "focus",
+                "selectedTask": null
+              }
+            },
+            "path": "selectedTask"
+          }
+        }
+      }
+    },
+    "pause": {
+      "requestType": {
+        "kind": "object",
+        "members": {}
+      },
+      "resultType": "CountdownRecord",
+      "expectedFailures": [],
+      "steps": [
+        {
+          "id": "save-session",
+          "kind": "commit-state",
+          "value": {
+            "sessions": {
+              "$": "ref",
+              "path": "state.sessions"
+            },
+            "history": {
+              "$": "ref",
+              "path": "state.history"
+            }
+          }
+        },
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "ref",
+            "path": "local.countdown"
+          }
+        }
+      ],
+      "countdown": {
+        "operation": "pause",
+        "collection": "sessions",
+        "id": "main"
+      }
+    },
+    "pauseProfile": {
+      "requestType": {
+        "kind": "object",
+        "members": {}
+      },
+      "resultType": "CountdownRecord",
+      "expectedFailures": [],
+      "steps": [
+        {
+          "id": "save-session",
+          "kind": "commit-state",
+          "value": {
+            "sessions": {
+              "$": "ref",
+              "path": "state.sessions"
+            },
+            "history": {
+              "$": "ref",
+              "path": "state.history"
+            }
+          }
+        },
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "ref",
+            "path": "local.countdown"
+          }
+        }
+      ],
+      "countdown": {
+        "operation": "profile-pause",
+        "collection": "sessions",
+        "id": "main"
+      }
+    },
+    "resume": {
+      "requestType": {
+        "kind": "object",
+        "members": {}
+      },
+      "resultType": "CountdownRecord",
+      "expectedFailures": [],
+      "steps": [
+        {
+          "id": "save-session",
+          "kind": "commit-state",
+          "value": {
+            "sessions": {
+              "$": "ref",
+              "path": "state.sessions"
+            },
+            "history": {
+              "$": "ref",
+              "path": "state.history"
+            }
+          }
+        },
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "ref",
+            "path": "local.countdown"
+          }
+        }
+      ],
+      "countdown": {
+        "operation": "resume",
+        "collection": "sessions",
+        "id": "main"
+      }
+    },
+    "resumeProfile": {
+      "requestType": {
+        "kind": "object",
+        "members": {}
+      },
+      "resultType": "CountdownRecord",
+      "expectedFailures": [],
+      "steps": [
+        {
+          "id": "save-session",
+          "kind": "commit-state",
+          "value": {
+            "sessions": {
+              "$": "ref",
+              "path": "state.sessions"
+            },
+            "history": {
+              "$": "ref",
+              "path": "state.history"
+            }
+          }
+        },
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "ref",
+            "path": "local.countdown"
+          }
+        }
+      ],
+      "countdown": {
+        "operation": "profile-rollback",
+        "collection": "sessions",
+        "id": "main"
+      }
+    },
+    "reset": {
+      "requestType": {
+        "kind": "object",
+        "members": {}
+      },
+      "resultType": "CountdownRecord",
+      "expectedFailures": [],
+      "steps": [
+        {
+          "id": "save-session",
+          "kind": "commit-state",
+          "value": {
+            "sessions": {
+              "$": "ref",
+              "path": "state.sessions"
+            },
+            "history": {
+              "$": "ref",
+              "path": "state.history"
+            }
+          }
+        },
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "ref",
+            "path": "local.countdown"
+          }
+        }
+      ],
+      "countdown": {
+        "operation": "cancel",
+        "collection": "sessions",
+        "id": "main",
+        "durationMs": {
+          "$": "multiply",
+          "left": {
+            "$": "ref",
+            "path": "config.focusMinutes"
+          },
+          "right": 60000
+        },
+        "fields": {
+          "kind": "focus",
+          "selectedTask": null
+        }
+      }
+    },
+    "complete": {
+      "requestType": {
+        "kind": "object",
+        "members": {}
+      },
+      "resultType": "CountdownRecord",
+      "expectedFailures": [],
+      "steps": [
+        {
+          "id": "save-session",
+          "kind": "commit-state",
+          "value": {
+            "sessions": {
+              "$": "ref",
+              "path": "state.sessions"
+            },
+            "history": {
+              "$": "prepend",
+              "value": {
+                "id": {
+                  "$": "ref",
+                  "path": "input.sessionId"
+                },
+                "owner": {
+                  "$": "ref",
+                  "path": "local.countdown.owner"
+                },
+                "sessionId": {
+                  "$": "ref",
+                  "path": "local.countdown.sessionId"
+                },
+                "phase": "completed",
+                "durationMs": {
+                  "$": "ref",
+                  "path": "local.countdown.durationMs"
+                },
+                "remainingMs": 0,
+                "referenceMs": {
+                  "$": "ref",
+                  "path": "input.nowMs"
+                },
+                "kind": {
+                  "$": "ref",
+                  "path": "local.countdown.kind"
+                },
+                "selectedTask": {
+                  "$": "ref",
+                  "path": "local.countdown.selectedTask"
+                },
+                "countdownId": "main"
+              },
+              "source": {
+                "$": "ref",
+                "path": "state.history"
+              },
+              "maximum": 1000
+            }
+          }
+        },
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "ref",
+            "path": "local.countdown"
+          }
+        }
+      ],
+      "countdown": {
+        "operation": "complete",
+        "collection": "sessions",
+        "id": "main"
+      }
+    },
+    "selectTask": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "owner": "string",
+          "sessionId": "string",
+          "nowMs": "integer"
+        }
+      },
+      "resultType": "CountdownRecord",
+      "expectedFailures": ["task-unavailable", "timer-limit"],
+      "steps": [
+        {
+          "id": "guard-timer-limit",
+          "kind": "branch",
+          "condition": {
+            "$": "and",
+            "values": [
+              {
+                "$": "not",
+                "value": {
+                  "$": "any",
+                  "source": {
+                    "$": "ref",
+                    "path": "state.sessions"
+                  },
+                  "item": "session",
+                  "predicate": {
+                    "$": "and",
+                    "values": [
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.session.owner"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.owner"
+                        }
+                      },
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.session.countdownId"
+                        },
+                        "right": "main"
+                      }
+                    ]
+                  },
+                  "maximum": 1000
+                }
+              },
+              {
+                "$": "not",
+                "value": {
+                  "$": "equals",
+                  "left": {
+                    "$": "take",
+                    "source": {
+                      "$": "ref",
+                      "path": "state.sessions"
+                    },
+                    "count": 999,
+                    "maximum": 1000
+                  },
+                  "right": {
+                    "$": "ref",
+                    "path": "state.sessions"
+                  }
+                }
+              }
+            ]
+          },
+          "then": [
+            {
+              "id": "timer-limit",
+              "kind": "return",
+              "outcome": "failed",
+              "code": "timer-limit"
+            }
+          ],
+          "else": []
+        },
+        {
+          "id": "current-session",
+          "kind": "set-local",
+          "name": "current",
+          "value": {
+            "$": "if",
+            "condition": {
+              "$": "any",
+              "source": {
+                "$": "ref",
+                "path": "state.sessions"
+              },
+              "item": "session",
+              "predicate": {
+                "$": "and",
+                "values": [
+                  {
+                    "$": "equals",
+                    "left": {
+                      "$": "ref",
+                      "path": "local.session.owner"
+                    },
+                    "right": {
+                      "$": "ref",
+                      "path": "input.owner"
+                    }
+                  },
+                  {
+                    "$": "equals",
+                    "left": {
+                      "$": "ref",
+                      "path": "local.session.countdownId"
+                    },
+                    "right": "main"
+                  }
+                ]
+              },
+              "maximum": 1000
+            },
+            "then": {
+              "$": "pick",
+              "from": {
+                "$": "filter",
+                "source": {
+                  "$": "ref",
+                  "path": "state.sessions"
+                },
+                "item": "session",
+                "predicate": {
+                  "$": "and",
+                  "values": [
+                    {
+                      "$": "equals",
+                      "left": {
+                        "$": "ref",
+                        "path": "local.session.owner"
+                      },
+                      "right": {
+                        "$": "ref",
+                        "path": "input.owner"
+                      }
+                    },
+                    {
+                      "$": "equals",
+                      "left": {
+                        "$": "ref",
+                        "path": "local.session.countdownId"
+                      },
+                      "right": "main"
+                    }
+                  ]
+                },
+                "maximum": 1000
+              },
+              "path": "0"
+            },
+            "else": {
+              "id": {
+                "$": "ref",
+                "path": "input.owner"
+              },
+              "owner": {
+                "$": "ref",
+                "path": "input.owner"
+              },
+              "sessionId": {
+                "$": "ref",
+                "path": "input.sessionId"
+              },
+              "phase": "idle",
+              "durationMs": {
+                "$": "multiply",
+                "left": {
+                  "$": "ref",
+                  "path": "config.focusMinutes"
+                },
+                "right": 60000
+              },
+              "remainingMs": {
+                "$": "multiply",
+                "left": {
+                  "$": "ref",
+                  "path": "config.focusMinutes"
+                },
+                "right": 60000
+              },
+              "referenceMs": {
+                "$": "ref",
+                "path": "input.nowMs"
+              },
+              "kind": "focus",
+              "selectedTask": null,
+              "countdownId": "main"
+            }
+          }
+        },
+        {
+          "id": "selected-task",
+          "kind": "effect",
+          "effect": {
+            "kind": "input",
+            "identity": "selectedTask"
+          },
+          "input": null,
+          "result": "task",
+          "onFailures": {
+            "input-unavailable": [
+              {
+                "id": "unavailable",
+                "kind": "return",
+                "outcome": "failed",
+                "code": "task-unavailable"
+              }
+            ]
+          },
+          "onSucceeded": [
+            {
+              "id": "next-session",
+              "kind": "set-local",
+              "name": "next",
+              "value": {
+                "id": {
+                  "$": "ref",
+                  "path": "local.current.id"
+                },
+                "owner": {
+                  "$": "ref",
+                  "path": "local.current.owner"
+                },
+                "sessionId": {
+                  "$": "ref",
+                  "path": "local.current.sessionId"
+                },
+                "phase": {
+                  "$": "ref",
+                  "path": "local.current.phase"
+                },
+                "durationMs": {
+                  "$": "ref",
+                  "path": "local.current.durationMs"
+                },
+                "remainingMs": {
+                  "$": "ref",
+                  "path": "local.current.remainingMs"
+                },
+                "referenceMs": {
+                  "$": "ref",
+                  "path": "local.current.referenceMs"
+                },
+                "kind": {
+                  "$": "ref",
+                  "path": "local.current.kind"
+                },
+                "selectedTask": {
+                  "$": "ref",
+                  "path": "local.task"
+                },
+                "countdownId": "main"
+              }
+            },
+            {
+              "id": "save-session",
+              "kind": "commit-state",
+              "value": {
+                "sessions": {
+                  "$": "prepend",
+                  "value": {
+                    "$": "ref",
+                    "path": "local.next"
+                  },
+                  "source": {
+                    "$": "filter",
+                    "source": {
+                      "$": "ref",
+                      "path": "state.sessions"
+                    },
+                    "item": "session",
+                    "predicate": {
+                      "$": "not",
+                      "value": {
+                        "$": "and",
+                        "values": [
+                          {
+                            "$": "equals",
+                            "left": {
+                              "$": "ref",
+                              "path": "local.session.owner"
+                            },
+                            "right": {
+                              "$": "ref",
+                              "path": "input.owner"
+                            }
+                          },
+                          {
+                            "$": "equals",
+                            "left": {
+                              "$": "ref",
+                              "path": "local.session.countdownId"
+                            },
+                            "right": "main"
+                          }
+                        ]
+                      }
+                    },
+                    "maximum": 1000
+                  },
+                  "maximum": 1000
+                },
+                "history": {
+                  "$": "ref",
+                  "path": "state.history"
+                }
+              }
+            },
+            {
+              "id": "session-result",
+              "kind": "return",
+              "outcome": "succeeded",
+              "value": {
+                "$": "ref",
+                "path": "local.next"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "catalog": {
+    "categories": ["productivity"],
+    "license": "MIT",
+    "supportLink": "https://github.com/bsafronov/prosto-designer/issues",
+    "tags": ["focus", "pomodoro", "tasks", "timer"],
+    "description": "catalog.description",
+    "displayName": "catalog.displayName",
+    "releaseNotes": "catalog.releaseNotes",
+    "summary": "catalog.summary"
+  },
+  "id": "prosto/focus-timer",
+  "localization": {
+    "en": {
+      "command.pause": "Pause Focus Timer",
+      "command.quickStart": "Start 25-minute Focus",
+      "command.quickStart.accessibility": "Quick start a 25-minute focus session",
+      "command.reset": "Reset Focus Timer",
+      "command.selectTask": "Use selected Task",
+      "command.startBreak": "Start 5-minute Break",
+      "command.startCustom": "Start Custom Focus Timer",
+      "control.break": "Start break",
+      "control.custom": "Start custom",
+      "control.custom.minutes": "Minutes",
+      "control.focus": "Start focus",
+      "control.pause": "Pause",
+      "control.reset": "Reset",
+      "setting.breakMinutes": "Break duration in minutes",
+      "setting.focusMinutes": "Focus duration in minutes",
+      "view.controls.accessibility": "Focus Timer controls and history",
+      "view.controls.content": "Focus 25m · Break 5m · Start, pause, reset, custom duration, selected Task, and session history.",
+      "view.controls.history": "Session history",
+      "view.controls.title": "Focus Timer",
+      "view.status.accessibility": "Current Focus Timer state",
+      "view.status.content": "Focus 25:00 · Ready",
+      "view.status.title": "Focus Timer status",
+      "name": "Focus Timer",
+      "interactions.controls.title": "Focus Timer",
+      "interactions.controls.nodes.status.label": "Remaining time",
+      "interactions.controls.nodes.minutes.label": "Custom minutes",
+      "interactions.controls.nodes.quickStart.label": "Start focus",
+      "interactions.controls.nodes.startBreak.label": "Start break",
+      "interactions.controls.nodes.startCustom.label": "Start custom",
+      "interactions.controls.nodes.pause.label": "Pause",
+      "interactions.controls.nodes.resume.label": "Resume",
+      "interactions.controls.nodes.reset.label": "Reset",
+      "interactions.controls.nodes.selectTask.label": "Use selected Task",
+      "interactions.controls.nodes.complete.label": "Complete expired session",
+      "interactions.controls.nodes.pauseProfile.label": "Pause inactive Profile",
+      "interactions.controls.nodes.resumeProfile.label": "Restore failed Profile transition",
+      "interactions.controls.nodes.retryCompletion.label": "Retry expired completion",
+      "interactions.controls.nodes.history.label": "Session history",
+      "catalog.description": "Focus Timer retains scoped sessions, pause reasons and history. Elapsed time includes phone lock; expiry completes once on foreground reconciliation without requiring background execution.",
+      "catalog.displayName": "Focus Timer",
+      "catalog.releaseNotes": "Semantic timer controls, durable timing references and scoped Profile pause recovery.",
+      "catalog.summary": "Run durable focus and break sessions with explicit pause and resume."
+    },
+    "ru": {
+      "command.pause": "Приостановить таймер концентрации",
+      "command.quickStart": "Начать 25 минут концентрации",
+      "command.quickStart.accessibility": "Быстро начать 25-минутный сеанс концентрации",
+      "command.reset": "Сбросить таймер концентрации",
+      "command.selectTask": "Использовать выбранную задачу",
+      "command.startBreak": "Начать 5 минут перерыва",
+      "command.startCustom": "Запустить таймер на своё время",
+      "control.break": "Начать перерыв",
+      "control.custom": "Начать на своё время",
+      "control.custom.minutes": "Минуты",
+      "control.focus": "Начать концентрацию",
+      "control.pause": "Пауза",
+      "control.reset": "Сбросить",
+      "setting.breakMinutes": "Длительность перерыва в минутах",
+      "setting.focusMinutes": "Длительность концентрации в минутах",
+      "view.controls.accessibility": "Управление таймером и история",
+      "view.controls.content": "Концентрация 25 мин · Перерыв 5 мин · Запуск, пауза, сброс, своя длительность, выбранная задача и история сеансов.",
+      "view.controls.history": "История сеансов",
+      "view.controls.title": "Таймер концентрации",
+      "view.status.accessibility": "Текущее состояние таймера концентрации",
+      "view.status.content": "Концентрация 25:00 · Готово",
+      "view.status.title": "Состояние таймера концентрации",
+      "name": "Таймер концентрации",
+      "interactions.controls.title": "Таймер концентрации",
+      "interactions.controls.nodes.status.label": "Оставшееся время",
+      "interactions.controls.nodes.minutes.label": "Своя длительность в минутах",
+      "interactions.controls.nodes.quickStart.label": "Начать концентрацию",
+      "interactions.controls.nodes.startBreak.label": "Начать перерыв",
+      "interactions.controls.nodes.startCustom.label": "Начать на своё время",
+      "interactions.controls.nodes.pause.label": "Пауза",
+      "interactions.controls.nodes.resume.label": "Продолжить",
+      "interactions.controls.nodes.reset.label": "Сбросить",
+      "interactions.controls.nodes.selectTask.label": "Использовать выбранную задачу",
+      "interactions.controls.nodes.complete.label": "Завершить истёкший сеанс",
+      "interactions.controls.nodes.pauseProfile.label": "Приостановить неактивный профиль",
+      "interactions.controls.nodes.resumeProfile.label": "Восстановить неудачный переход профиля",
+      "interactions.controls.nodes.retryCompletion.label": "Повторить завершение истёкшего сеанса",
+      "interactions.controls.nodes.history.label": "История сеансов",
+      "catalog.description": "Таймер сохраняет сеансы, причины пауз и историю в своём контексте. Время учитывает блокировку телефона; истёкший сеанс завершается один раз при возврате без фонового выполнения.",
+      "catalog.displayName": "Таймер концентрации",
+      "catalog.releaseNotes": "Семантическое управление таймером, сохраняемое время и восстановление пауз профиля.",
+      "catalog.summary": "Запускайте сохраняемые сеансы концентрации и отдыха с явной паузой и продолжением."
+    }
+  },
+  "name": "name",
+  "settings": {
+    "breakMinutes": {
+      "default": 5,
+      "layers": ["plugin-default", "instance", "user"],
+      "live": true,
+      "maximum": 60,
+      "minimum": 1,
+      "required": true,
+      "scope": "user",
+      "type": "integer",
+      "title": "setting.breakMinutes"
+    },
+    "focusMinutes": {
+      "default": 25,
+      "layers": ["plugin-default", "instance", "user"],
+      "live": true,
+      "maximum": 180,
+      "minimum": 1,
+      "required": true,
+      "scope": "user",
+      "type": "integer",
+      "title": "setting.focusMinutes"
+    }
+  },
+  "state": {
+    "sessions": {
+      "type": {
+        "kind": "array",
+        "items": "CountdownRecord",
+        "maximum": 1000
+      },
+      "default": []
+    },
+    "history": {
+      "type": {
+        "kind": "array",
+        "items": "CountdownRecord",
+        "maximum": 1000
+      },
+      "default": []
+    }
+  },
+  "version": "1.0.2",
+  "interactions": {
+    "controls": {
+      "role": "work",
+      "feature": "prosto/timed-session",
+      "title": "interactions.controls.title",
+      "source": {
+        "collection": "sessions"
+      },
+      "timing": {
+        "collection": "sessions",
+        "complete": "complete",
+        "pauseProfile": "pauseProfile",
+        "rollbackProfile": "resumeProfile",
+        "id": "main"
+      },
+      "nodes": {
+        "status": {
+          "kind": "timed-status",
+          "label": "interactions.controls.nodes.status.label"
+        },
+        "minutes": {
+          "kind": "input",
+          "label": "interactions.controls.nodes.minutes.label",
+          "type": "integer"
+        },
+        "quickStart": {
+          "kind": "invoke",
+          "label": "interactions.controls.nodes.quickStart.label",
+          "action": "quickStart",
+          "bindings": {}
+        },
+        "startBreak": {
+          "kind": "invoke",
+          "label": "interactions.controls.nodes.startBreak.label",
+          "action": "startBreak",
+          "bindings": {}
+        },
+        "startCustom": {
+          "kind": "invoke",
+          "label": "interactions.controls.nodes.startCustom.label",
+          "action": "startCustom",
+          "bindings": {
+            "minutes": {
+              "source": "input",
+              "input": "minutes"
+            }
+          }
+        },
+        "pause": {
+          "kind": "invoke",
+          "label": "interactions.controls.nodes.pause.label",
+          "action": "pause",
+          "bindings": {},
+          "when": ["running"]
+        },
+        "resume": {
+          "kind": "invoke",
+          "label": "interactions.controls.nodes.resume.label",
+          "action": "resume",
+          "bindings": {},
+          "when": ["paused", "profile-paused"]
+        },
+        "reset": {
+          "kind": "invoke",
+          "label": "interactions.controls.nodes.reset.label",
+          "action": "reset",
+          "bindings": {}
+        },
+        "selectTask": {
+          "kind": "invoke",
+          "label": "interactions.controls.nodes.selectTask.label",
+          "action": "selectTask",
+          "bindings": {
+            "owner": {
+              "source": "timing",
+              "field": "owner"
+            },
+            "sessionId": {
+              "source": "generated-identity"
+            },
+            "nowMs": {
+              "source": "timing",
+              "field": "nowMs"
+            }
+          },
+          "commit": {
+            "collection": "sessions"
+          }
+        },
+        "complete": {
+          "kind": "invoke",
+          "label": "interactions.controls.nodes.complete.label",
+          "action": "complete",
+          "bindings": {},
+          "when": ["running"],
+          "automatic": "expiration",
+          "whenExpired": true
+        },
+        "pauseProfile": {
+          "kind": "invoke",
+          "label": "interactions.controls.nodes.pauseProfile.label",
+          "action": "pauseProfile",
+          "bindings": {},
+          "when": ["running"],
+          "automatic": "profile-pause"
+        },
+        "resumeProfile": {
+          "kind": "invoke",
+          "label": "interactions.controls.nodes.resumeProfile.label",
+          "action": "resumeProfile",
+          "bindings": {},
+          "when": ["profile-paused"],
+          "automatic": "profile-rollback"
+        },
+        "retryCompletion": {
+          "kind": "invoke",
+          "label": "interactions.controls.nodes.retryCompletion.label",
+          "action": "complete",
+          "bindings": {},
+          "when": ["running"],
+          "whenExpired": true
+        },
+        "history": {
+          "kind": "source-value",
+          "label": "interactions.controls.nodes.history.label",
+          "field": "history"
+        }
+      },
+      "capability": {
+        "kind": "timer"
+      }
+    }
+  },
+  "multiplicity": "many",
+  "types": {
+    "SelectedTask": {
+      "kind": "object",
+      "members": {
+        "dueAt": {
+          "kind": "optional",
+          "value": "string"
+        },
+        "id": "string",
+        "priority": "string",
+        "tags": {
+          "constraint": "label-set",
+          "items": "string",
+          "kind": "array",
+          "maximum": 32
+        },
+        "title": "string"
+      }
+    },
+    "CountdownRecord": {
+      "kind": "object",
+      "members": {
+        "id": "string",
+        "owner": "string",
+        "sessionId": "string",
+        "phase": "string",
+        "durationMs": "integer",
+        "remainingMs": "integer",
+        "referenceMs": "integer",
+        "kind": "string",
+        "selectedTask": {
+          "kind": "optional",
+          "value": "SelectedTask"
+        },
+        "countdownId": "string"
+      }
+    }
+  },
+  "inputs": {
+    "selectedTask": {
+      "kind": "operation",
+      "requestType": "null",
+      "resultType": "SelectedTask",
+      "expectedFailures": ["task-unavailable"],
+      "requirement": "optional",
+      "purpose": "prosto.tasks.selected-task"
+    }
+  },
+  "defaultLanguage": "en"
+}

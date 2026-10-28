@@ -1,0 +1,2681 @@
+{
+  "id": "prosto/jsonplaceholder",
+  "version": "1.0.0",
+  "name": "name",
+  "multiplicity": "many",
+  "defaultLanguage": "en",
+  "localization": {
+    "en": {
+      "name": "JSONPlaceholder",
+      "summary": "Explore six connected Collections from a public sample API.",
+      "description": "Live read-only Users, Posts, Comments, Todos, Albums, and Photos. Browse relationships, nested fields, and images using shared Host capabilities.",
+      "users": "Users",
+      "posts": "Posts",
+      "comments": "Comments",
+      "todos": "Todos",
+      "albums": "Albums",
+      "photos": "Photos",
+      "user": "User",
+      "post": "Post",
+      "album": "Album",
+      "id": "Identity",
+      "recordName": "Name",
+      "username": "Username",
+      "email": "Email",
+      "address": "Address",
+      "street": "Street",
+      "suite": "Suite",
+      "city": "City",
+      "zipcode": "Postal code",
+      "geo": "Coordinates",
+      "lat": "Latitude",
+      "lng": "Longitude",
+      "phone": "Phone",
+      "website": "Website",
+      "company": "Company",
+      "catchPhrase": "Catchphrase",
+      "bs": "Business",
+      "title": "Title",
+      "body": "Body",
+      "userId": "User identity",
+      "postId": "Post identity",
+      "albumId": "Album identity",
+      "completed": "Completed",
+      "url": "Image URL",
+      "thumbnailUrl": "Thumbnail URL"
+    },
+    "ru": {
+      "name": "JSONPlaceholder",
+      "summary": "Шесть связанных коллекций из открытого тестового API.",
+      "description": "Пользователи, публикации, комментарии, задачи, альбомы и фотографии из API только для чтения.",
+      "users": "Пользователи",
+      "posts": "Публикации",
+      "comments": "Комментарии",
+      "todos": "Задачи",
+      "albums": "Альбомы",
+      "photos": "Фотографии",
+      "user": "Пользователь",
+      "post": "Публикация",
+      "album": "Альбом",
+      "id": "Идентификатор",
+      "recordName": "Имя",
+      "username": "Имя пользователя",
+      "email": "Электронная почта",
+      "address": "Адрес",
+      "street": "Улица",
+      "suite": "Квартира",
+      "city": "Город",
+      "zipcode": "Почтовый индекс",
+      "geo": "Координаты",
+      "lat": "Широта",
+      "lng": "Долгота",
+      "phone": "Телефон",
+      "website": "Сайт",
+      "company": "Компания",
+      "catchPhrase": "Слоган",
+      "bs": "Деятельность",
+      "title": "Название",
+      "body": "Текст",
+      "userId": "Идентификатор пользователя",
+      "postId": "Идентификатор публикации",
+      "albumId": "Идентификатор альбома",
+      "completed": "Выполнено",
+      "url": "URL изображения",
+      "thumbnailUrl": "URL миниатюры"
+    }
+  },
+  "catalog": {
+    "summary": "summary",
+    "description": "description",
+    "categories": ["productivity"],
+    "license": "MIT",
+    "supportLink": "https://github.com/bsafronov/prosto-designer/issues",
+    "tags": ["example", "api", "collections"],
+    "displayName": "name"
+  },
+  "types": {
+    "User": {
+      "kind": "object",
+      "members": {
+        "id": "integer",
+        "name": "string",
+        "username": "string",
+        "email": "string",
+        "address": {
+          "kind": "object",
+          "members": {
+            "street": "string",
+            "suite": "string",
+            "city": "string",
+            "zipcode": "string",
+            "geo": {
+              "kind": "object",
+              "members": {
+                "lat": "string",
+                "lng": "string"
+              }
+            }
+          }
+        },
+        "phone": "string",
+        "website": "string",
+        "company": {
+          "kind": "object",
+          "members": {
+            "name": "string",
+            "catchPhrase": "string",
+            "bs": "string"
+          }
+        }
+      }
+    },
+    "Post": {
+      "kind": "object",
+      "members": {
+        "userId": "integer",
+        "id": "integer",
+        "title": "string",
+        "body": "string"
+      }
+    },
+    "Comment": {
+      "kind": "object",
+      "members": {
+        "postId": "integer",
+        "id": "integer",
+        "name": "string",
+        "email": "string",
+        "body": "string"
+      }
+    },
+    "Todo": {
+      "kind": "object",
+      "members": {
+        "userId": "integer",
+        "id": "integer",
+        "title": "string",
+        "completed": "boolean"
+      }
+    },
+    "Album": {
+      "kind": "object",
+      "members": {
+        "userId": "integer",
+        "id": "integer",
+        "title": "string"
+      }
+    },
+    "Photo": {
+      "kind": "object",
+      "members": {
+        "albumId": "integer",
+        "id": "integer",
+        "title": "string",
+        "url": "string",
+        "thumbnailUrl": "string"
+      }
+    }
+  },
+  "connections": {
+    "api": {
+      "defaultOrigin": "https://jsonplaceholder.typicode.com",
+      "paths": ["/users", "/posts", "/comments", "/todos", "/albums", "/photos"],
+      "methods": ["GET"],
+      "authentication": "none",
+      "maximumBytes": 524288
+    }
+  },
+  "collections": {
+    "users": {
+      "label": "users",
+      "recordType": "User",
+      "fields": {
+        "id": {
+          "label": "id"
+        },
+        "name": {
+          "label": "recordName",
+          "searchable": true
+        },
+        "username": {
+          "label": "username",
+          "searchable": true
+        },
+        "email": {
+          "label": "email",
+          "searchable": true
+        },
+        "address": {
+          "label": "address"
+        },
+        "address.street": {
+          "label": "street",
+          "searchable": true
+        },
+        "address.suite": {
+          "label": "suite",
+          "searchable": true
+        },
+        "address.city": {
+          "label": "city",
+          "searchable": true,
+          "filterable": true,
+          "meaning": "jsonplaceholder/address.city"
+        },
+        "address.zipcode": {
+          "label": "zipcode",
+          "searchable": true
+        },
+        "address.geo": {
+          "label": "geo"
+        },
+        "address.geo.lat": {
+          "label": "lat",
+          "searchable": true
+        },
+        "address.geo.lng": {
+          "label": "lng",
+          "searchable": true
+        },
+        "phone": {
+          "label": "phone",
+          "searchable": true
+        },
+        "website": {
+          "label": "website",
+          "searchable": true
+        },
+        "company": {
+          "label": "company"
+        },
+        "company.name": {
+          "label": "company",
+          "searchable": true,
+          "filterable": true,
+          "meaning": "jsonplaceholder/company.name"
+        },
+        "company.catchPhrase": {
+          "label": "catchPhrase",
+          "searchable": true
+        },
+        "company.bs": {
+          "label": "bs",
+          "searchable": true
+        }
+      },
+      "identity": "id",
+      "title": "name",
+      "source": "users",
+      "execution": "service",
+      "pageSize": 25,
+      "query": {
+        "action": "queryUser",
+        "expectedFailures": [
+          "authority-denied",
+          "conflict",
+          "credentials-required",
+          "forbidden",
+          "indeterminate",
+          "invalid-request",
+          "invalid-response",
+          "not-found",
+          "rate-limited",
+          "request-too-large",
+          "response-too-large",
+          "service-unavailable",
+          "timeout",
+          "unauthorized"
+        ]
+      },
+      "lookup": {
+        "action": "lookupUser",
+        "expectedFailures": [
+          "authority-denied",
+          "conflict",
+          "credentials-required",
+          "forbidden",
+          "indeterminate",
+          "invalid-request",
+          "invalid-response",
+          "not-found",
+          "rate-limited",
+          "request-too-large",
+          "response-too-large",
+          "service-unavailable",
+          "timeout",
+          "unauthorized"
+        ]
+      },
+      "presentation": {
+        "leading": {
+          "kind": "avatar",
+          "name": {
+            "field": "name"
+          }
+        },
+        "description": {
+          "field": "company.name"
+        },
+        "metadata": [
+          {
+            "kind": "field-value",
+            "field": "address.city"
+          },
+          {
+            "kind": "field-value",
+            "field": "email"
+          }
+        ]
+      }
+    },
+    "posts": {
+      "label": "posts",
+      "recordType": "Post",
+      "fields": {
+        "userId": {
+          "label": "userId",
+          "filterable": true,
+          "meaning": "jsonplaceholder/userId"
+        },
+        "id": {
+          "label": "id"
+        },
+        "title": {
+          "label": "title",
+          "searchable": true
+        },
+        "body": {
+          "label": "body",
+          "searchable": true
+        }
+      },
+      "identity": "id",
+      "title": "title",
+      "source": "posts",
+      "execution": "service",
+      "pageSize": 25,
+      "query": {
+        "action": "queryPost",
+        "expectedFailures": [
+          "authority-denied",
+          "conflict",
+          "credentials-required",
+          "forbidden",
+          "indeterminate",
+          "invalid-request",
+          "invalid-response",
+          "not-found",
+          "rate-limited",
+          "request-too-large",
+          "response-too-large",
+          "service-unavailable",
+          "timeout",
+          "unauthorized"
+        ]
+      },
+      "lookup": {
+        "action": "lookupPost",
+        "expectedFailures": [
+          "authority-denied",
+          "conflict",
+          "credentials-required",
+          "forbidden",
+          "indeterminate",
+          "invalid-request",
+          "invalid-response",
+          "not-found",
+          "rate-limited",
+          "request-too-large",
+          "response-too-large",
+          "service-unavailable",
+          "timeout",
+          "unauthorized"
+        ]
+      },
+      "relationships": {
+        "user": {
+          "field": "userId",
+          "collection": "users",
+          "label": "user"
+        }
+      },
+      "presentation": {
+        "description": {
+          "field": "body"
+        }
+      }
+    },
+    "comments": {
+      "label": "comments",
+      "recordType": "Comment",
+      "fields": {
+        "postId": {
+          "label": "postId",
+          "filterable": true,
+          "meaning": "jsonplaceholder/postId"
+        },
+        "id": {
+          "label": "id"
+        },
+        "name": {
+          "label": "recordName",
+          "searchable": true
+        },
+        "email": {
+          "label": "email",
+          "searchable": true
+        },
+        "body": {
+          "label": "body",
+          "searchable": true
+        }
+      },
+      "identity": "id",
+      "title": "name",
+      "source": "comments",
+      "execution": "service",
+      "pageSize": 25,
+      "query": {
+        "action": "queryComment",
+        "expectedFailures": [
+          "authority-denied",
+          "conflict",
+          "credentials-required",
+          "forbidden",
+          "indeterminate",
+          "invalid-request",
+          "invalid-response",
+          "not-found",
+          "rate-limited",
+          "request-too-large",
+          "response-too-large",
+          "service-unavailable",
+          "timeout",
+          "unauthorized"
+        ]
+      },
+      "lookup": {
+        "action": "lookupComment",
+        "expectedFailures": [
+          "authority-denied",
+          "conflict",
+          "credentials-required",
+          "forbidden",
+          "indeterminate",
+          "invalid-request",
+          "invalid-response",
+          "not-found",
+          "rate-limited",
+          "request-too-large",
+          "response-too-large",
+          "service-unavailable",
+          "timeout",
+          "unauthorized"
+        ]
+      },
+      "relationships": {
+        "post": {
+          "field": "postId",
+          "collection": "posts",
+          "label": "post"
+        }
+      },
+      "presentation": {
+        "description": {
+          "field": "body"
+        }
+      }
+    },
+    "todos": {
+      "label": "todos",
+      "recordType": "Todo",
+      "fields": {
+        "userId": {
+          "label": "userId",
+          "filterable": true,
+          "meaning": "jsonplaceholder/userId"
+        },
+        "id": {
+          "label": "id"
+        },
+        "title": {
+          "label": "title",
+          "searchable": true
+        },
+        "completed": {
+          "label": "completed",
+          "filterable": true,
+          "meaning": "jsonplaceholder/completed"
+        }
+      },
+      "identity": "id",
+      "title": "title",
+      "source": "todos",
+      "execution": "service",
+      "pageSize": 25,
+      "query": {
+        "action": "queryTodo",
+        "expectedFailures": [
+          "authority-denied",
+          "conflict",
+          "credentials-required",
+          "forbidden",
+          "indeterminate",
+          "invalid-request",
+          "invalid-response",
+          "not-found",
+          "rate-limited",
+          "request-too-large",
+          "response-too-large",
+          "service-unavailable",
+          "timeout",
+          "unauthorized"
+        ]
+      },
+      "lookup": {
+        "action": "lookupTodo",
+        "expectedFailures": [
+          "authority-denied",
+          "conflict",
+          "credentials-required",
+          "forbidden",
+          "indeterminate",
+          "invalid-request",
+          "invalid-response",
+          "not-found",
+          "rate-limited",
+          "request-too-large",
+          "response-too-large",
+          "service-unavailable",
+          "timeout",
+          "unauthorized"
+        ]
+      },
+      "relationships": {
+        "user": {
+          "field": "userId",
+          "collection": "users",
+          "label": "user"
+        }
+      },
+      "presentation": {
+        "metadata": [
+          {
+            "kind": "field-value",
+            "field": "completed"
+          }
+        ]
+      }
+    },
+    "albums": {
+      "label": "albums",
+      "recordType": "Album",
+      "fields": {
+        "userId": {
+          "label": "userId",
+          "filterable": true,
+          "meaning": "jsonplaceholder/userId"
+        },
+        "id": {
+          "label": "id"
+        },
+        "title": {
+          "label": "title",
+          "searchable": true
+        }
+      },
+      "identity": "id",
+      "title": "title",
+      "source": "albums",
+      "execution": "service",
+      "pageSize": 25,
+      "query": {
+        "action": "queryAlbum",
+        "expectedFailures": [
+          "authority-denied",
+          "conflict",
+          "credentials-required",
+          "forbidden",
+          "indeterminate",
+          "invalid-request",
+          "invalid-response",
+          "not-found",
+          "rate-limited",
+          "request-too-large",
+          "response-too-large",
+          "service-unavailable",
+          "timeout",
+          "unauthorized"
+        ]
+      },
+      "lookup": {
+        "action": "lookupAlbum",
+        "expectedFailures": [
+          "authority-denied",
+          "conflict",
+          "credentials-required",
+          "forbidden",
+          "indeterminate",
+          "invalid-request",
+          "invalid-response",
+          "not-found",
+          "rate-limited",
+          "request-too-large",
+          "response-too-large",
+          "service-unavailable",
+          "timeout",
+          "unauthorized"
+        ]
+      },
+      "relationships": {
+        "user": {
+          "field": "userId",
+          "collection": "users",
+          "label": "user"
+        }
+      },
+      "presentation": {
+        "leading": {
+          "kind": "icon",
+          "symbol": "package"
+        }
+      }
+    },
+    "photos": {
+      "label": "photos",
+      "recordType": "Photo",
+      "fields": {
+        "albumId": {
+          "label": "albumId",
+          "filterable": true,
+          "meaning": "jsonplaceholder/albumId"
+        },
+        "id": {
+          "label": "id"
+        },
+        "title": {
+          "label": "title",
+          "searchable": true
+        },
+        "url": {
+          "label": "url"
+        },
+        "thumbnailUrl": {
+          "label": "thumbnailUrl"
+        }
+      },
+      "identity": "id",
+      "title": "title",
+      "source": "photos",
+      "execution": "service",
+      "pageSize": 25,
+      "query": {
+        "action": "queryPhoto",
+        "expectedFailures": [
+          "authority-denied",
+          "conflict",
+          "credentials-required",
+          "forbidden",
+          "indeterminate",
+          "invalid-request",
+          "invalid-response",
+          "not-found",
+          "rate-limited",
+          "request-too-large",
+          "response-too-large",
+          "service-unavailable",
+          "timeout",
+          "unauthorized"
+        ]
+      },
+      "lookup": {
+        "action": "lookupPhoto",
+        "expectedFailures": [
+          "authority-denied",
+          "conflict",
+          "credentials-required",
+          "forbidden",
+          "indeterminate",
+          "invalid-request",
+          "invalid-response",
+          "not-found",
+          "rate-limited",
+          "request-too-large",
+          "response-too-large",
+          "service-unavailable",
+          "timeout",
+          "unauthorized"
+        ]
+      },
+      "relationships": {
+        "album": {
+          "field": "albumId",
+          "collection": "albums",
+          "label": "album"
+        }
+      },
+      "presentation": {
+        "leading": {
+          "kind": "artwork",
+          "alt": {
+            "field": "title"
+          },
+          "image": {
+            "field": "thumbnailUrl"
+          }
+        },
+        "image": {
+          "image": {
+            "field": "url"
+          },
+          "alt": {
+            "field": "title"
+          }
+        }
+      }
+    }
+  },
+  "actions": {
+    "queryUser": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "search": "string",
+          "cursor": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "limit": "integer",
+          "filters": {
+            "kind": "object",
+            "members": {
+              "address.city": {
+                "kind": "optional",
+                "value": {
+                  "kind": "array",
+                  "items": "string",
+                  "maximum": 64
+                }
+              },
+              "company.name": {
+                "kind": "optional",
+                "value": {
+                  "kind": "array",
+                  "items": "string",
+                  "maximum": 64
+                }
+              }
+            }
+          }
+        }
+      },
+      "resultType": {
+        "kind": "object",
+        "members": {
+          "records": {
+            "kind": "array",
+            "items": "User",
+            "maximum": 25
+          },
+          "cursor": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "complete": "boolean"
+        }
+      },
+      "expectedFailures": [
+        "authority-denied",
+        "conflict",
+        "credentials-required",
+        "forbidden",
+        "indeterminate",
+        "invalid-request",
+        "invalid-response",
+        "not-found",
+        "rate-limited",
+        "request-too-large",
+        "response-too-large",
+        "service-unavailable",
+        "timeout",
+        "unauthorized"
+      ],
+      "steps": [
+        {
+          "kind": "request",
+          "connection": "api",
+          "method": "GET",
+          "path": "/users",
+          "query": {
+            "q": {
+              "$": "ref",
+              "path": "input.search"
+            },
+            "_start": {
+              "$": "to-string",
+              "value": {
+                "$": "parse-integer",
+                "value": {
+                  "$": "coalesce",
+                  "values": [
+                    {
+                      "$": "ref",
+                      "path": "input.cursor"
+                    },
+                    "0"
+                  ]
+                }
+              }
+            },
+            "_limit": {
+              "$": "to-string",
+              "value": {
+                "$": "ref",
+                "path": "input.limit"
+              }
+            }
+          },
+          "result": "response",
+          "onSucceeded": [
+            {
+              "kind": "return",
+              "outcome": "succeeded",
+              "value": {
+                "records": {
+                  "$": "ref",
+                  "path": "local.response"
+                },
+                "cursor": {
+                  "$": "if",
+                  "condition": {
+                    "$": "less-than",
+                    "left": {
+                      "$": "length",
+                      "value": {
+                        "$": "ref",
+                        "path": "local.response"
+                      }
+                    },
+                    "right": {
+                      "$": "ref",
+                      "path": "input.limit"
+                    }
+                  },
+                  "then": null,
+                  "else": {
+                    "$": "to-string",
+                    "value": {
+                      "$": "add",
+                      "left": {
+                        "$": "parse-integer",
+                        "value": {
+                          "$": "coalesce",
+                          "values": [
+                            {
+                              "$": "ref",
+                              "path": "input.cursor"
+                            },
+                            "0"
+                          ]
+                        }
+                      },
+                      "right": {
+                        "$": "length",
+                        "value": {
+                          "$": "ref",
+                          "path": "local.response"
+                        }
+                      }
+                    }
+                  }
+                },
+                "complete": {
+                  "$": "less-than",
+                  "left": {
+                    "$": "length",
+                    "value": {
+                      "$": "ref",
+                      "path": "local.response"
+                    }
+                  },
+                  "right": {
+                    "$": "ref",
+                    "path": "input.limit"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "lookupUser": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "identity": "integer"
+        }
+      },
+      "resultType": {
+        "kind": "optional",
+        "value": "User"
+      },
+      "expectedFailures": [
+        "authority-denied",
+        "conflict",
+        "credentials-required",
+        "forbidden",
+        "indeterminate",
+        "invalid-request",
+        "invalid-response",
+        "not-found",
+        "rate-limited",
+        "request-too-large",
+        "response-too-large",
+        "service-unavailable",
+        "timeout",
+        "unauthorized"
+      ],
+      "steps": [
+        {
+          "kind": "request",
+          "connection": "api",
+          "method": "GET",
+          "path": "/users",
+          "query": {
+            "id": {
+              "$": "to-string",
+              "value": {
+                "$": "ref",
+                "path": "input.identity"
+              }
+            },
+            "_limit": "1"
+          },
+          "result": "response",
+          "onSucceeded": [
+            {
+              "kind": "return",
+              "outcome": "succeeded",
+              "value": {
+                "$": "if",
+                "condition": {
+                  "$": "equals",
+                  "left": {
+                    "$": "length",
+                    "value": {
+                      "$": "ref",
+                      "path": "local.response"
+                    }
+                  },
+                  "right": 0
+                },
+                "then": null,
+                "else": {
+                  "$": "pick",
+                  "from": {
+                    "$": "ref",
+                    "path": "local.response"
+                  },
+                  "path": "0"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "queryPost": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "search": "string",
+          "cursor": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "limit": "integer",
+          "filters": {
+            "kind": "object",
+            "members": {
+              "userId": {
+                "kind": "optional",
+                "value": {
+                  "kind": "array",
+                  "items": "integer",
+                  "maximum": 64
+                }
+              }
+            }
+          }
+        }
+      },
+      "resultType": {
+        "kind": "object",
+        "members": {
+          "records": {
+            "kind": "array",
+            "items": "Post",
+            "maximum": 25
+          },
+          "cursor": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "complete": "boolean"
+        }
+      },
+      "expectedFailures": [
+        "authority-denied",
+        "conflict",
+        "credentials-required",
+        "forbidden",
+        "indeterminate",
+        "invalid-request",
+        "invalid-response",
+        "not-found",
+        "rate-limited",
+        "request-too-large",
+        "response-too-large",
+        "service-unavailable",
+        "timeout",
+        "unauthorized"
+      ],
+      "steps": [
+        {
+          "kind": "request",
+          "connection": "api",
+          "method": "GET",
+          "path": "/posts",
+          "query": {
+            "$": "if",
+            "condition": {
+              "$": "equals",
+              "left": {
+                "$": "length",
+                "value": {
+                  "$": "coalesce",
+                  "values": [
+                    {
+                      "$": "ref",
+                      "path": "input.filters.userId"
+                    },
+                    []
+                  ]
+                }
+              },
+              "right": 1
+            },
+            "then": {
+              "q": {
+                "$": "ref",
+                "path": "input.search"
+              },
+              "_start": {
+                "$": "to-string",
+                "value": {
+                  "$": "parse-integer",
+                  "value": {
+                    "$": "coalesce",
+                    "values": [
+                      {
+                        "$": "ref",
+                        "path": "input.cursor"
+                      },
+                      "0"
+                    ]
+                  }
+                }
+              },
+              "_limit": {
+                "$": "to-string",
+                "value": {
+                  "$": "ref",
+                  "path": "input.limit"
+                }
+              },
+              "userId": {
+                "$": "to-string",
+                "value": {
+                  "$": "pick",
+                  "from": {
+                    "$": "coalesce",
+                    "values": [
+                      {
+                        "$": "ref",
+                        "path": "input.filters.userId"
+                      },
+                      []
+                    ]
+                  },
+                  "path": "0"
+                }
+              }
+            },
+            "else": {
+              "q": {
+                "$": "ref",
+                "path": "input.search"
+              },
+              "_start": {
+                "$": "to-string",
+                "value": {
+                  "$": "parse-integer",
+                  "value": {
+                    "$": "coalesce",
+                    "values": [
+                      {
+                        "$": "ref",
+                        "path": "input.cursor"
+                      },
+                      "0"
+                    ]
+                  }
+                }
+              },
+              "_limit": {
+                "$": "to-string",
+                "value": {
+                  "$": "ref",
+                  "path": "input.limit"
+                }
+              }
+            }
+          },
+          "result": "response",
+          "onSucceeded": [
+            {
+              "kind": "return",
+              "outcome": "succeeded",
+              "value": {
+                "records": {
+                  "$": "ref",
+                  "path": "local.response"
+                },
+                "cursor": {
+                  "$": "if",
+                  "condition": {
+                    "$": "less-than",
+                    "left": {
+                      "$": "length",
+                      "value": {
+                        "$": "ref",
+                        "path": "local.response"
+                      }
+                    },
+                    "right": {
+                      "$": "ref",
+                      "path": "input.limit"
+                    }
+                  },
+                  "then": null,
+                  "else": {
+                    "$": "to-string",
+                    "value": {
+                      "$": "add",
+                      "left": {
+                        "$": "parse-integer",
+                        "value": {
+                          "$": "coalesce",
+                          "values": [
+                            {
+                              "$": "ref",
+                              "path": "input.cursor"
+                            },
+                            "0"
+                          ]
+                        }
+                      },
+                      "right": {
+                        "$": "length",
+                        "value": {
+                          "$": "ref",
+                          "path": "local.response"
+                        }
+                      }
+                    }
+                  }
+                },
+                "complete": {
+                  "$": "less-than",
+                  "left": {
+                    "$": "length",
+                    "value": {
+                      "$": "ref",
+                      "path": "local.response"
+                    }
+                  },
+                  "right": {
+                    "$": "ref",
+                    "path": "input.limit"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "lookupPost": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "identity": "integer"
+        }
+      },
+      "resultType": {
+        "kind": "optional",
+        "value": "Post"
+      },
+      "expectedFailures": [
+        "authority-denied",
+        "conflict",
+        "credentials-required",
+        "forbidden",
+        "indeterminate",
+        "invalid-request",
+        "invalid-response",
+        "not-found",
+        "rate-limited",
+        "request-too-large",
+        "response-too-large",
+        "service-unavailable",
+        "timeout",
+        "unauthorized"
+      ],
+      "steps": [
+        {
+          "kind": "request",
+          "connection": "api",
+          "method": "GET",
+          "path": "/posts",
+          "query": {
+            "id": {
+              "$": "to-string",
+              "value": {
+                "$": "ref",
+                "path": "input.identity"
+              }
+            },
+            "_limit": "1"
+          },
+          "result": "response",
+          "onSucceeded": [
+            {
+              "kind": "return",
+              "outcome": "succeeded",
+              "value": {
+                "$": "if",
+                "condition": {
+                  "$": "equals",
+                  "left": {
+                    "$": "length",
+                    "value": {
+                      "$": "ref",
+                      "path": "local.response"
+                    }
+                  },
+                  "right": 0
+                },
+                "then": null,
+                "else": {
+                  "$": "pick",
+                  "from": {
+                    "$": "ref",
+                    "path": "local.response"
+                  },
+                  "path": "0"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "queryComment": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "search": "string",
+          "cursor": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "limit": "integer",
+          "filters": {
+            "kind": "object",
+            "members": {
+              "postId": {
+                "kind": "optional",
+                "value": {
+                  "kind": "array",
+                  "items": "integer",
+                  "maximum": 64
+                }
+              }
+            }
+          }
+        }
+      },
+      "resultType": {
+        "kind": "object",
+        "members": {
+          "records": {
+            "kind": "array",
+            "items": "Comment",
+            "maximum": 25
+          },
+          "cursor": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "complete": "boolean"
+        }
+      },
+      "expectedFailures": [
+        "authority-denied",
+        "conflict",
+        "credentials-required",
+        "forbidden",
+        "indeterminate",
+        "invalid-request",
+        "invalid-response",
+        "not-found",
+        "rate-limited",
+        "request-too-large",
+        "response-too-large",
+        "service-unavailable",
+        "timeout",
+        "unauthorized"
+      ],
+      "steps": [
+        {
+          "kind": "request",
+          "connection": "api",
+          "method": "GET",
+          "path": "/comments",
+          "query": {
+            "$": "if",
+            "condition": {
+              "$": "equals",
+              "left": {
+                "$": "length",
+                "value": {
+                  "$": "coalesce",
+                  "values": [
+                    {
+                      "$": "ref",
+                      "path": "input.filters.postId"
+                    },
+                    []
+                  ]
+                }
+              },
+              "right": 1
+            },
+            "then": {
+              "q": {
+                "$": "ref",
+                "path": "input.search"
+              },
+              "_start": {
+                "$": "to-string",
+                "value": {
+                  "$": "parse-integer",
+                  "value": {
+                    "$": "coalesce",
+                    "values": [
+                      {
+                        "$": "ref",
+                        "path": "input.cursor"
+                      },
+                      "0"
+                    ]
+                  }
+                }
+              },
+              "_limit": {
+                "$": "to-string",
+                "value": {
+                  "$": "ref",
+                  "path": "input.limit"
+                }
+              },
+              "postId": {
+                "$": "to-string",
+                "value": {
+                  "$": "pick",
+                  "from": {
+                    "$": "coalesce",
+                    "values": [
+                      {
+                        "$": "ref",
+                        "path": "input.filters.postId"
+                      },
+                      []
+                    ]
+                  },
+                  "path": "0"
+                }
+              }
+            },
+            "else": {
+              "q": {
+                "$": "ref",
+                "path": "input.search"
+              },
+              "_start": {
+                "$": "to-string",
+                "value": {
+                  "$": "parse-integer",
+                  "value": {
+                    "$": "coalesce",
+                    "values": [
+                      {
+                        "$": "ref",
+                        "path": "input.cursor"
+                      },
+                      "0"
+                    ]
+                  }
+                }
+              },
+              "_limit": {
+                "$": "to-string",
+                "value": {
+                  "$": "ref",
+                  "path": "input.limit"
+                }
+              }
+            }
+          },
+          "result": "response",
+          "onSucceeded": [
+            {
+              "kind": "return",
+              "outcome": "succeeded",
+              "value": {
+                "records": {
+                  "$": "ref",
+                  "path": "local.response"
+                },
+                "cursor": {
+                  "$": "if",
+                  "condition": {
+                    "$": "less-than",
+                    "left": {
+                      "$": "length",
+                      "value": {
+                        "$": "ref",
+                        "path": "local.response"
+                      }
+                    },
+                    "right": {
+                      "$": "ref",
+                      "path": "input.limit"
+                    }
+                  },
+                  "then": null,
+                  "else": {
+                    "$": "to-string",
+                    "value": {
+                      "$": "add",
+                      "left": {
+                        "$": "parse-integer",
+                        "value": {
+                          "$": "coalesce",
+                          "values": [
+                            {
+                              "$": "ref",
+                              "path": "input.cursor"
+                            },
+                            "0"
+                          ]
+                        }
+                      },
+                      "right": {
+                        "$": "length",
+                        "value": {
+                          "$": "ref",
+                          "path": "local.response"
+                        }
+                      }
+                    }
+                  }
+                },
+                "complete": {
+                  "$": "less-than",
+                  "left": {
+                    "$": "length",
+                    "value": {
+                      "$": "ref",
+                      "path": "local.response"
+                    }
+                  },
+                  "right": {
+                    "$": "ref",
+                    "path": "input.limit"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "lookupComment": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "identity": "integer"
+        }
+      },
+      "resultType": {
+        "kind": "optional",
+        "value": "Comment"
+      },
+      "expectedFailures": [
+        "authority-denied",
+        "conflict",
+        "credentials-required",
+        "forbidden",
+        "indeterminate",
+        "invalid-request",
+        "invalid-response",
+        "not-found",
+        "rate-limited",
+        "request-too-large",
+        "response-too-large",
+        "service-unavailable",
+        "timeout",
+        "unauthorized"
+      ],
+      "steps": [
+        {
+          "kind": "request",
+          "connection": "api",
+          "method": "GET",
+          "path": "/comments",
+          "query": {
+            "id": {
+              "$": "to-string",
+              "value": {
+                "$": "ref",
+                "path": "input.identity"
+              }
+            },
+            "_limit": "1"
+          },
+          "result": "response",
+          "onSucceeded": [
+            {
+              "kind": "return",
+              "outcome": "succeeded",
+              "value": {
+                "$": "if",
+                "condition": {
+                  "$": "equals",
+                  "left": {
+                    "$": "length",
+                    "value": {
+                      "$": "ref",
+                      "path": "local.response"
+                    }
+                  },
+                  "right": 0
+                },
+                "then": null,
+                "else": {
+                  "$": "pick",
+                  "from": {
+                    "$": "ref",
+                    "path": "local.response"
+                  },
+                  "path": "0"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "queryTodo": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "search": "string",
+          "cursor": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "limit": "integer",
+          "filters": {
+            "kind": "object",
+            "members": {
+              "userId": {
+                "kind": "optional",
+                "value": {
+                  "kind": "array",
+                  "items": "integer",
+                  "maximum": 64
+                }
+              },
+              "completed": {
+                "kind": "optional",
+                "value": {
+                  "kind": "array",
+                  "items": "boolean",
+                  "maximum": 64
+                }
+              }
+            }
+          }
+        }
+      },
+      "resultType": {
+        "kind": "object",
+        "members": {
+          "records": {
+            "kind": "array",
+            "items": "Todo",
+            "maximum": 25
+          },
+          "cursor": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "complete": "boolean"
+        }
+      },
+      "expectedFailures": [
+        "authority-denied",
+        "conflict",
+        "credentials-required",
+        "forbidden",
+        "indeterminate",
+        "invalid-request",
+        "invalid-response",
+        "not-found",
+        "rate-limited",
+        "request-too-large",
+        "response-too-large",
+        "service-unavailable",
+        "timeout",
+        "unauthorized"
+      ],
+      "steps": [
+        {
+          "kind": "request",
+          "connection": "api",
+          "method": "GET",
+          "path": "/todos",
+          "query": {
+            "$": "if",
+            "condition": {
+              "$": "equals",
+              "left": {
+                "$": "length",
+                "value": {
+                  "$": "coalesce",
+                  "values": [
+                    {
+                      "$": "ref",
+                      "path": "input.filters.userId"
+                    },
+                    []
+                  ]
+                }
+              },
+              "right": 1
+            },
+            "then": {
+              "$": "if",
+              "condition": {
+                "$": "equals",
+                "left": {
+                  "$": "length",
+                  "value": {
+                    "$": "coalesce",
+                    "values": [
+                      {
+                        "$": "ref",
+                        "path": "input.filters.completed"
+                      },
+                      []
+                    ]
+                  }
+                },
+                "right": 1
+              },
+              "then": {
+                "q": {
+                  "$": "ref",
+                  "path": "input.search"
+                },
+                "_start": {
+                  "$": "to-string",
+                  "value": {
+                    "$": "parse-integer",
+                    "value": {
+                      "$": "coalesce",
+                      "values": [
+                        {
+                          "$": "ref",
+                          "path": "input.cursor"
+                        },
+                        "0"
+                      ]
+                    }
+                  }
+                },
+                "_limit": {
+                  "$": "to-string",
+                  "value": {
+                    "$": "ref",
+                    "path": "input.limit"
+                  }
+                },
+                "userId": {
+                  "$": "to-string",
+                  "value": {
+                    "$": "pick",
+                    "from": {
+                      "$": "coalesce",
+                      "values": [
+                        {
+                          "$": "ref",
+                          "path": "input.filters.userId"
+                        },
+                        []
+                      ]
+                    },
+                    "path": "0"
+                  }
+                },
+                "completed": {
+                  "$": "to-string",
+                  "value": {
+                    "$": "pick",
+                    "from": {
+                      "$": "coalesce",
+                      "values": [
+                        {
+                          "$": "ref",
+                          "path": "input.filters.completed"
+                        },
+                        []
+                      ]
+                    },
+                    "path": "0"
+                  }
+                }
+              },
+              "else": {
+                "q": {
+                  "$": "ref",
+                  "path": "input.search"
+                },
+                "_start": {
+                  "$": "to-string",
+                  "value": {
+                    "$": "parse-integer",
+                    "value": {
+                      "$": "coalesce",
+                      "values": [
+                        {
+                          "$": "ref",
+                          "path": "input.cursor"
+                        },
+                        "0"
+                      ]
+                    }
+                  }
+                },
+                "_limit": {
+                  "$": "to-string",
+                  "value": {
+                    "$": "ref",
+                    "path": "input.limit"
+                  }
+                },
+                "userId": {
+                  "$": "to-string",
+                  "value": {
+                    "$": "pick",
+                    "from": {
+                      "$": "coalesce",
+                      "values": [
+                        {
+                          "$": "ref",
+                          "path": "input.filters.userId"
+                        },
+                        []
+                      ]
+                    },
+                    "path": "0"
+                  }
+                }
+              }
+            },
+            "else": {
+              "$": "if",
+              "condition": {
+                "$": "equals",
+                "left": {
+                  "$": "length",
+                  "value": {
+                    "$": "coalesce",
+                    "values": [
+                      {
+                        "$": "ref",
+                        "path": "input.filters.completed"
+                      },
+                      []
+                    ]
+                  }
+                },
+                "right": 1
+              },
+              "then": {
+                "q": {
+                  "$": "ref",
+                  "path": "input.search"
+                },
+                "_start": {
+                  "$": "to-string",
+                  "value": {
+                    "$": "parse-integer",
+                    "value": {
+                      "$": "coalesce",
+                      "values": [
+                        {
+                          "$": "ref",
+                          "path": "input.cursor"
+                        },
+                        "0"
+                      ]
+                    }
+                  }
+                },
+                "_limit": {
+                  "$": "to-string",
+                  "value": {
+                    "$": "ref",
+                    "path": "input.limit"
+                  }
+                },
+                "completed": {
+                  "$": "to-string",
+                  "value": {
+                    "$": "pick",
+                    "from": {
+                      "$": "coalesce",
+                      "values": [
+                        {
+                          "$": "ref",
+                          "path": "input.filters.completed"
+                        },
+                        []
+                      ]
+                    },
+                    "path": "0"
+                  }
+                }
+              },
+              "else": {
+                "q": {
+                  "$": "ref",
+                  "path": "input.search"
+                },
+                "_start": {
+                  "$": "to-string",
+                  "value": {
+                    "$": "parse-integer",
+                    "value": {
+                      "$": "coalesce",
+                      "values": [
+                        {
+                          "$": "ref",
+                          "path": "input.cursor"
+                        },
+                        "0"
+                      ]
+                    }
+                  }
+                },
+                "_limit": {
+                  "$": "to-string",
+                  "value": {
+                    "$": "ref",
+                    "path": "input.limit"
+                  }
+                }
+              }
+            }
+          },
+          "result": "response",
+          "onSucceeded": [
+            {
+              "kind": "return",
+              "outcome": "succeeded",
+              "value": {
+                "records": {
+                  "$": "ref",
+                  "path": "local.response"
+                },
+                "cursor": {
+                  "$": "if",
+                  "condition": {
+                    "$": "less-than",
+                    "left": {
+                      "$": "length",
+                      "value": {
+                        "$": "ref",
+                        "path": "local.response"
+                      }
+                    },
+                    "right": {
+                      "$": "ref",
+                      "path": "input.limit"
+                    }
+                  },
+                  "then": null,
+                  "else": {
+                    "$": "to-string",
+                    "value": {
+                      "$": "add",
+                      "left": {
+                        "$": "parse-integer",
+                        "value": {
+                          "$": "coalesce",
+                          "values": [
+                            {
+                              "$": "ref",
+                              "path": "input.cursor"
+                            },
+                            "0"
+                          ]
+                        }
+                      },
+                      "right": {
+                        "$": "length",
+                        "value": {
+                          "$": "ref",
+                          "path": "local.response"
+                        }
+                      }
+                    }
+                  }
+                },
+                "complete": {
+                  "$": "less-than",
+                  "left": {
+                    "$": "length",
+                    "value": {
+                      "$": "ref",
+                      "path": "local.response"
+                    }
+                  },
+                  "right": {
+                    "$": "ref",
+                    "path": "input.limit"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "lookupTodo": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "identity": "integer"
+        }
+      },
+      "resultType": {
+        "kind": "optional",
+        "value": "Todo"
+      },
+      "expectedFailures": [
+        "authority-denied",
+        "conflict",
+        "credentials-required",
+        "forbidden",
+        "indeterminate",
+        "invalid-request",
+        "invalid-response",
+        "not-found",
+        "rate-limited",
+        "request-too-large",
+        "response-too-large",
+        "service-unavailable",
+        "timeout",
+        "unauthorized"
+      ],
+      "steps": [
+        {
+          "kind": "request",
+          "connection": "api",
+          "method": "GET",
+          "path": "/todos",
+          "query": {
+            "id": {
+              "$": "to-string",
+              "value": {
+                "$": "ref",
+                "path": "input.identity"
+              }
+            },
+            "_limit": "1"
+          },
+          "result": "response",
+          "onSucceeded": [
+            {
+              "kind": "return",
+              "outcome": "succeeded",
+              "value": {
+                "$": "if",
+                "condition": {
+                  "$": "equals",
+                  "left": {
+                    "$": "length",
+                    "value": {
+                      "$": "ref",
+                      "path": "local.response"
+                    }
+                  },
+                  "right": 0
+                },
+                "then": null,
+                "else": {
+                  "$": "pick",
+                  "from": {
+                    "$": "ref",
+                    "path": "local.response"
+                  },
+                  "path": "0"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "queryAlbum": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "search": "string",
+          "cursor": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "limit": "integer",
+          "filters": {
+            "kind": "object",
+            "members": {
+              "userId": {
+                "kind": "optional",
+                "value": {
+                  "kind": "array",
+                  "items": "integer",
+                  "maximum": 64
+                }
+              }
+            }
+          }
+        }
+      },
+      "resultType": {
+        "kind": "object",
+        "members": {
+          "records": {
+            "kind": "array",
+            "items": "Album",
+            "maximum": 25
+          },
+          "cursor": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "complete": "boolean"
+        }
+      },
+      "expectedFailures": [
+        "authority-denied",
+        "conflict",
+        "credentials-required",
+        "forbidden",
+        "indeterminate",
+        "invalid-request",
+        "invalid-response",
+        "not-found",
+        "rate-limited",
+        "request-too-large",
+        "response-too-large",
+        "service-unavailable",
+        "timeout",
+        "unauthorized"
+      ],
+      "steps": [
+        {
+          "kind": "request",
+          "connection": "api",
+          "method": "GET",
+          "path": "/albums",
+          "query": {
+            "$": "if",
+            "condition": {
+              "$": "equals",
+              "left": {
+                "$": "length",
+                "value": {
+                  "$": "coalesce",
+                  "values": [
+                    {
+                      "$": "ref",
+                      "path": "input.filters.userId"
+                    },
+                    []
+                  ]
+                }
+              },
+              "right": 1
+            },
+            "then": {
+              "q": {
+                "$": "ref",
+                "path": "input.search"
+              },
+              "_start": {
+                "$": "to-string",
+                "value": {
+                  "$": "parse-integer",
+                  "value": {
+                    "$": "coalesce",
+                    "values": [
+                      {
+                        "$": "ref",
+                        "path": "input.cursor"
+                      },
+                      "0"
+                    ]
+                  }
+                }
+              },
+              "_limit": {
+                "$": "to-string",
+                "value": {
+                  "$": "ref",
+                  "path": "input.limit"
+                }
+              },
+              "userId": {
+                "$": "to-string",
+                "value": {
+                  "$": "pick",
+                  "from": {
+                    "$": "coalesce",
+                    "values": [
+                      {
+                        "$": "ref",
+                        "path": "input.filters.userId"
+                      },
+                      []
+                    ]
+                  },
+                  "path": "0"
+                }
+              }
+            },
+            "else": {
+              "q": {
+                "$": "ref",
+                "path": "input.search"
+              },
+              "_start": {
+                "$": "to-string",
+                "value": {
+                  "$": "parse-integer",
+                  "value": {
+                    "$": "coalesce",
+                    "values": [
+                      {
+                        "$": "ref",
+                        "path": "input.cursor"
+                      },
+                      "0"
+                    ]
+                  }
+                }
+              },
+              "_limit": {
+                "$": "to-string",
+                "value": {
+                  "$": "ref",
+                  "path": "input.limit"
+                }
+              }
+            }
+          },
+          "result": "response",
+          "onSucceeded": [
+            {
+              "kind": "return",
+              "outcome": "succeeded",
+              "value": {
+                "records": {
+                  "$": "ref",
+                  "path": "local.response"
+                },
+                "cursor": {
+                  "$": "if",
+                  "condition": {
+                    "$": "less-than",
+                    "left": {
+                      "$": "length",
+                      "value": {
+                        "$": "ref",
+                        "path": "local.response"
+                      }
+                    },
+                    "right": {
+                      "$": "ref",
+                      "path": "input.limit"
+                    }
+                  },
+                  "then": null,
+                  "else": {
+                    "$": "to-string",
+                    "value": {
+                      "$": "add",
+                      "left": {
+                        "$": "parse-integer",
+                        "value": {
+                          "$": "coalesce",
+                          "values": [
+                            {
+                              "$": "ref",
+                              "path": "input.cursor"
+                            },
+                            "0"
+                          ]
+                        }
+                      },
+                      "right": {
+                        "$": "length",
+                        "value": {
+                          "$": "ref",
+                          "path": "local.response"
+                        }
+                      }
+                    }
+                  }
+                },
+                "complete": {
+                  "$": "less-than",
+                  "left": {
+                    "$": "length",
+                    "value": {
+                      "$": "ref",
+                      "path": "local.response"
+                    }
+                  },
+                  "right": {
+                    "$": "ref",
+                    "path": "input.limit"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "lookupAlbum": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "identity": "integer"
+        }
+      },
+      "resultType": {
+        "kind": "optional",
+        "value": "Album"
+      },
+      "expectedFailures": [
+        "authority-denied",
+        "conflict",
+        "credentials-required",
+        "forbidden",
+        "indeterminate",
+        "invalid-request",
+        "invalid-response",
+        "not-found",
+        "rate-limited",
+        "request-too-large",
+        "response-too-large",
+        "service-unavailable",
+        "timeout",
+        "unauthorized"
+      ],
+      "steps": [
+        {
+          "kind": "request",
+          "connection": "api",
+          "method": "GET",
+          "path": "/albums",
+          "query": {
+            "id": {
+              "$": "to-string",
+              "value": {
+                "$": "ref",
+                "path": "input.identity"
+              }
+            },
+            "_limit": "1"
+          },
+          "result": "response",
+          "onSucceeded": [
+            {
+              "kind": "return",
+              "outcome": "succeeded",
+              "value": {
+                "$": "if",
+                "condition": {
+                  "$": "equals",
+                  "left": {
+                    "$": "length",
+                    "value": {
+                      "$": "ref",
+                      "path": "local.response"
+                    }
+                  },
+                  "right": 0
+                },
+                "then": null,
+                "else": {
+                  "$": "pick",
+                  "from": {
+                    "$": "ref",
+                    "path": "local.response"
+                  },
+                  "path": "0"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "queryPhoto": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "search": "string",
+          "cursor": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "limit": "integer",
+          "filters": {
+            "kind": "object",
+            "members": {
+              "albumId": {
+                "kind": "optional",
+                "value": {
+                  "kind": "array",
+                  "items": "integer",
+                  "maximum": 64
+                }
+              }
+            }
+          }
+        }
+      },
+      "resultType": {
+        "kind": "object",
+        "members": {
+          "records": {
+            "kind": "array",
+            "items": "Photo",
+            "maximum": 25
+          },
+          "cursor": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "complete": "boolean"
+        }
+      },
+      "expectedFailures": [
+        "authority-denied",
+        "conflict",
+        "credentials-required",
+        "forbidden",
+        "indeterminate",
+        "invalid-request",
+        "invalid-response",
+        "not-found",
+        "rate-limited",
+        "request-too-large",
+        "response-too-large",
+        "service-unavailable",
+        "timeout",
+        "unauthorized"
+      ],
+      "steps": [
+        {
+          "kind": "request",
+          "connection": "api",
+          "method": "GET",
+          "path": "/photos",
+          "query": {
+            "$": "if",
+            "condition": {
+              "$": "equals",
+              "left": {
+                "$": "length",
+                "value": {
+                  "$": "coalesce",
+                  "values": [
+                    {
+                      "$": "ref",
+                      "path": "input.filters.albumId"
+                    },
+                    []
+                  ]
+                }
+              },
+              "right": 1
+            },
+            "then": {
+              "q": {
+                "$": "ref",
+                "path": "input.search"
+              },
+              "_start": {
+                "$": "to-string",
+                "value": {
+                  "$": "parse-integer",
+                  "value": {
+                    "$": "coalesce",
+                    "values": [
+                      {
+                        "$": "ref",
+                        "path": "input.cursor"
+                      },
+                      "0"
+                    ]
+                  }
+                }
+              },
+              "_limit": {
+                "$": "to-string",
+                "value": {
+                  "$": "ref",
+                  "path": "input.limit"
+                }
+              },
+              "albumId": {
+                "$": "to-string",
+                "value": {
+                  "$": "pick",
+                  "from": {
+                    "$": "coalesce",
+                    "values": [
+                      {
+                        "$": "ref",
+                        "path": "input.filters.albumId"
+                      },
+                      []
+                    ]
+                  },
+                  "path": "0"
+                }
+              }
+            },
+            "else": {
+              "q": {
+                "$": "ref",
+                "path": "input.search"
+              },
+              "_start": {
+                "$": "to-string",
+                "value": {
+                  "$": "parse-integer",
+                  "value": {
+                    "$": "coalesce",
+                    "values": [
+                      {
+                        "$": "ref",
+                        "path": "input.cursor"
+                      },
+                      "0"
+                    ]
+                  }
+                }
+              },
+              "_limit": {
+                "$": "to-string",
+                "value": {
+                  "$": "ref",
+                  "path": "input.limit"
+                }
+              }
+            }
+          },
+          "result": "response",
+          "onSucceeded": [
+            {
+              "kind": "return",
+              "outcome": "succeeded",
+              "value": {
+                "records": {
+                  "$": "ref",
+                  "path": "local.response"
+                },
+                "cursor": {
+                  "$": "if",
+                  "condition": {
+                    "$": "less-than",
+                    "left": {
+                      "$": "length",
+                      "value": {
+                        "$": "ref",
+                        "path": "local.response"
+                      }
+                    },
+                    "right": {
+                      "$": "ref",
+                      "path": "input.limit"
+                    }
+                  },
+                  "then": null,
+                  "else": {
+                    "$": "to-string",
+                    "value": {
+                      "$": "add",
+                      "left": {
+                        "$": "parse-integer",
+                        "value": {
+                          "$": "coalesce",
+                          "values": [
+                            {
+                              "$": "ref",
+                              "path": "input.cursor"
+                            },
+                            "0"
+                          ]
+                        }
+                      },
+                      "right": {
+                        "$": "length",
+                        "value": {
+                          "$": "ref",
+                          "path": "local.response"
+                        }
+                      }
+                    }
+                  }
+                },
+                "complete": {
+                  "$": "less-than",
+                  "left": {
+                    "$": "length",
+                    "value": {
+                      "$": "ref",
+                      "path": "local.response"
+                    }
+                  },
+                  "right": {
+                    "$": "ref",
+                    "path": "input.limit"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "lookupPhoto": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "identity": "integer"
+        }
+      },
+      "resultType": {
+        "kind": "optional",
+        "value": "Photo"
+      },
+      "expectedFailures": [
+        "authority-denied",
+        "conflict",
+        "credentials-required",
+        "forbidden",
+        "indeterminate",
+        "invalid-request",
+        "invalid-response",
+        "not-found",
+        "rate-limited",
+        "request-too-large",
+        "response-too-large",
+        "service-unavailable",
+        "timeout",
+        "unauthorized"
+      ],
+      "steps": [
+        {
+          "kind": "request",
+          "connection": "api",
+          "method": "GET",
+          "path": "/photos",
+          "query": {
+            "id": {
+              "$": "to-string",
+              "value": {
+                "$": "ref",
+                "path": "input.identity"
+              }
+            },
+            "_limit": "1"
+          },
+          "result": "response",
+          "onSucceeded": [
+            {
+              "kind": "return",
+              "outcome": "succeeded",
+              "value": {
+                "$": "if",
+                "condition": {
+                  "$": "equals",
+                  "left": {
+                    "$": "length",
+                    "value": {
+                      "$": "ref",
+                      "path": "local.response"
+                    }
+                  },
+                  "right": 0
+                },
+                "then": null,
+                "else": {
+                  "$": "pick",
+                  "from": {
+                    "$": "ref",
+                    "path": "local.response"
+                  },
+                  "path": "0"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

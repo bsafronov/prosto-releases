@@ -1,0 +1,286 @@
+{
+  "actions": {
+    "forecast": {
+      "concurrency": "parallel",
+      "expectedFailures": [
+        "location-not-found",
+        "service-unavailable",
+        "invalid-response"
+      ],
+      "lifecycleScope": "activation",
+      "requestType": "ForecastRequest",
+      "resultType": "Forecast",
+      "steps": [
+        {
+          "effect": {
+            "identity": "http.fetch",
+            "kind": "capability",
+            "operation": "fetch"
+          },
+          "id": "geocode",
+          "input": {
+            "method": "GET",
+            "origin": "https://geocoding-api.open-meteo.com",
+            "path": "/v1/search",
+            "query": {
+              "count": 1,
+              "format": "json",
+              "language": "en",
+              "name": {
+                "$": "ref",
+                "path": "input.location"
+              }
+            }
+          },
+          "kind": "effect",
+          "onSucceeded": [
+            {
+              "effect": {
+                "identity": "http.fetch",
+                "kind": "capability",
+                "operation": "fetch"
+              },
+              "id": "forecast-fetch",
+              "input": {
+                "method": "GET",
+                "origin": "https://api.open-meteo.com",
+                "path": "/v1/forecast",
+                "query": {
+                  "current": "temperature_2m,weather_code",
+                  "daily": "weather_code,temperature_2m_max,temperature_2m_min",
+                  "forecast_days": 5,
+                  "latitude": {
+                    "$": "pick",
+                    "from": {
+                      "$": "ref",
+                      "path": "local.place"
+                    },
+                    "path": "results.0.latitude"
+                  },
+                  "longitude": {
+                    "$": "pick",
+                    "from": {
+                      "$": "ref",
+                      "path": "local.place"
+                    },
+                    "path": "results.0.longitude"
+                  },
+                  "temperature_unit": {
+                    "$": "ref",
+                    "path": "input.temperatureUnit"
+                  },
+                  "timezone": "auto"
+                }
+              },
+              "kind": "effect",
+              "onSucceeded": [
+                {
+                  "id": "normalize",
+                  "kind": "set-local",
+                  "name": "forecast",
+                  "value": {
+                    "attribution": "Open-Meteo",
+                    "current": {
+                      "temperature": {
+                        "$": "pick",
+                        "from": {
+                          "$": "ref",
+                          "path": "local.rawForecast"
+                        },
+                        "path": "current.temperature_2m"
+                      },
+                      "weatherCode": {
+                        "$": "pick",
+                        "from": {
+                          "$": "ref",
+                          "path": "local.rawForecast"
+                        },
+                        "path": "current.weather_code"
+                      }
+                    },
+                    "daily": {
+                      "$": "zip-map",
+                      "item": "day",
+                      "maximum": 5,
+                      "sources": {
+                        "date": {
+                          "$": "pick",
+                          "from": {
+                            "$": "ref",
+                            "path": "local.rawForecast"
+                          },
+                          "path": "daily.time"
+                        },
+                        "maximumTemperature": {
+                          "$": "pick",
+                          "from": {
+                            "$": "ref",
+                            "path": "local.rawForecast"
+                          },
+                          "path": "daily.temperature_2m_max"
+                        },
+                        "minimumTemperature": {
+                          "$": "pick",
+                          "from": {
+                            "$": "ref",
+                            "path": "local.rawForecast"
+                          },
+                          "path": "daily.temperature_2m_min"
+                        },
+                        "weatherCode": {
+                          "$": "pick",
+                          "from": {
+                            "$": "ref",
+                            "path": "local.rawForecast"
+                          },
+                          "path": "daily.weather_code"
+                        }
+                      },
+                      "value": {
+                        "date": {
+                          "$": "ref",
+                          "path": "local.day.date"
+                        },
+                        "maximumTemperature": {
+                          "$": "ref",
+                          "path": "local.day.maximumTemperature"
+                        },
+                        "minimumTemperature": {
+                          "$": "ref",
+                          "path": "local.day.minimumTemperature"
+                        },
+                        "weatherCode": {
+                          "$": "ref",
+                          "path": "local.day.weatherCode"
+                        }
+                      }
+                    },
+                    "location": {
+                      "$": "ref",
+                      "path": "input.location"
+                    },
+                    "observedAt": {
+                      "$": "pick",
+                      "from": {
+                        "$": "ref",
+                        "path": "local.rawForecast"
+                      },
+                      "path": "current.time"
+                    },
+                    "unit": {
+                      "$": "ref",
+                      "path": "input.temperatureUnit"
+                    }
+                  }
+                },
+                {
+                  "id": "provider-success",
+                  "kind": "return",
+                  "outcome": "succeeded",
+                  "value": {
+                    "$": "ref",
+                    "path": "local.forecast"
+                  }
+                }
+              ],
+              "result": "rawForecast"
+            }
+          ],
+          "result": "place"
+        }
+      ]
+    }
+  },
+  "catalog": {
+    "categories": [
+      "data",
+      "integration"
+    ],
+    "license": "MIT",
+    "supportLink": "https://github.com/bsafronov/prosto-designer/issues",
+    "tags": [
+      "headless",
+      "open-meteo",
+      "provider",
+      "weather"
+    ],
+    "description": "catalog.description",
+    "displayName": "catalog.displayName",
+    "releaseNotes": "catalog.releaseNotes",
+    "summary": "catalog.summary"
+  },
+  "contributions": {
+    "attribution": {
+      "message": "provider.attribution",
+      "url": "https://open-meteo.com/"
+    },
+    "commands": {}
+  },
+  "id": "prosto/open-meteo-weather-provider",
+  "localization": {
+    "en": {
+      "provider.attribution": "Weather data by Open-Meteo",
+      "name": "Open-Meteo Weather Provider",
+      "catalog.description": "A headless Provider Plugin that fulfills the Weather contract through approved HTTPS requests to Open-Meteo.",
+      "catalog.displayName": "Open-Meteo Weather Provider",
+      "catalog.releaseNotes": "Headless provider with exact approved network access and no positional presentation declarations.",
+      "catalog.summary": "Supplies verified Open-Meteo weather data to compatible Plugins."
+    },
+    "ru": {
+      "provider.attribution": "Данные погоды предоставлены Open-Meteo",
+      "name": "Провайдер погоды Open-Meteo",
+      "catalog.description": "Провайдер без интерфейса, реализующий контракт погоды через разрешённые HTTPS-запросы к Open-Meteo.",
+      "catalog.displayName": "Провайдер погоды Open-Meteo",
+      "catalog.releaseNotes": "Провайдер без интерфейса с точным разрешением сетевого доступа.",
+      "catalog.summary": "Предоставляет проверенные данные погоды Open-Meteo совместимым плагинам."
+    }
+  },
+  "name": "name",
+  "version": "1.1.2",
+  "types": {
+    "Forecast": {
+      "kind": "object",
+      "members": {
+        "attribution": "string",
+        "current": {
+          "kind": "object",
+          "members": {
+            "temperature": "number",
+            "weatherCode": "integer"
+          }
+        },
+        "daily": {
+          "items": {
+            "kind": "object",
+            "members": {
+              "date": "string",
+              "maximumTemperature": "number",
+              "minimumTemperature": "number",
+              "weatherCode": "integer"
+            }
+          },
+          "kind": "array",
+          "maximum": 5
+        },
+        "location": "string",
+        "observedAt": "string",
+        "unit": "string"
+      }
+    },
+    "ForecastRequest": {
+      "kind": "object",
+      "members": {
+        "location": "string",
+        "temperatureUnit": "string"
+      }
+    }
+  },
+  "outputs": {
+    "forecast": {
+      "kind": "operation",
+      "action": "forecast",
+      "purpose": "prosto.weather.forecast"
+    }
+  },
+  "defaultLanguage": "en"
+}

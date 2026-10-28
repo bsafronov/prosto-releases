@@ -1,0 +1,1944 @@
+{
+  "actions": {
+    "exportMarkdown": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "content": "string",
+          "fileName": "string",
+          "mediaType": "string"
+        }
+      },
+      "steps": [
+        {
+          "effect": {
+            "identity": "file.document",
+            "kind": "capability",
+            "operation": "save"
+          },
+          "id": "save-markdown",
+          "input": {
+            "$": "ref",
+            "path": "input"
+          },
+          "kind": "effect",
+          "onSucceeded": [
+            {
+              "id": "export-return",
+              "kind": "return",
+              "outcome": "succeeded",
+              "value": null
+            }
+          ],
+          "result": "saved"
+        }
+      ]
+    },
+    "importMarkdown": {
+      "resultType": {
+        "kind": "optional",
+        "value": {
+          "kind": "object",
+          "members": {
+            "content": "string",
+            "fileName": "string",
+            "mediaType": "string"
+          }
+        }
+      },
+      "steps": [
+        {
+          "effect": {
+            "identity": "file.document",
+            "kind": "capability",
+            "operation": "open"
+          },
+          "id": "open-markdown",
+          "input": {},
+          "kind": "effect",
+          "onSucceeded": [
+            {
+              "id": "import-observation",
+              "kind": "observe",
+              "observation": {
+                "document": {
+                  "$": "ref",
+                  "path": "local.document"
+                },
+                "kind": "markdown-imported"
+              }
+            },
+            {
+              "id": "import-return",
+              "kind": "return",
+              "outcome": "succeeded",
+              "value": {
+                "$": "ref",
+                "path": "local.document"
+              }
+            }
+          ],
+          "result": "document"
+        }
+      ]
+    },
+    "create": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "title": "string",
+          "markdown": "string"
+        }
+      },
+      "resultType": "Note",
+      "expectedFailures": ["note-limit"],
+      "steps": [
+        {
+          "kind": "branch",
+          "condition": {
+            "$": "not",
+            "value": {
+              "$": "equals",
+              "left": {
+                "$": "take",
+                "source": {
+                  "$": "ref",
+                  "path": "state.notes"
+                },
+                "count": 9999,
+                "maximum": 10000
+              },
+              "right": {
+                "$": "ref",
+                "path": "state.notes"
+              }
+            }
+          },
+          "then": [
+            {
+              "kind": "return",
+              "outcome": "failed",
+              "code": "note-limit"
+            }
+          ],
+          "else": []
+        },
+        {
+          "kind": "set-local",
+          "name": "created",
+          "value": {
+            "id": {
+              "$": "ref",
+              "path": "mutation.identity"
+            },
+            "title": {
+              "$": "ref",
+              "path": "input.title"
+            },
+            "tags": [],
+            "changed": {
+              "$": "ref",
+              "path": "mutation.instant"
+            },
+            "markdown": {
+              "$": "ref",
+              "path": "input.markdown"
+            },
+            "taskId": null,
+            "taskInstanceId": null,
+            "taskPluginIdentity": null
+          }
+        },
+        {
+          "kind": "commit-state",
+          "value": {
+            "notes": {
+              "$": "prepend",
+              "value": {
+                "$": "ref",
+                "path": "local.created"
+              },
+              "source": {
+                "$": "ref",
+                "path": "state.notes"
+              },
+              "maximum": 10000
+            }
+          }
+        },
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "ref",
+            "path": "local.created"
+          }
+        }
+      ]
+    },
+    "save": {
+      "requestType": "NoteUpdate",
+      "resultType": "Note",
+      "expectedFailures": ["resource-deleted"],
+      "steps": [
+        {
+          "kind": "set-local",
+          "name": "current",
+          "value": {
+            "$": "record-select",
+            "collection": "notes",
+            "identity": "id",
+            "key": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "maximum": 10000
+          }
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "$": "equals",
+            "left": {
+              "$": "ref",
+              "path": "local.current"
+            },
+            "right": null
+          },
+          "then": [
+            {
+              "kind": "return",
+              "outcome": "failed",
+              "code": "resource-deleted"
+            }
+          ],
+          "else": []
+        },
+        {
+          "kind": "commit-state",
+          "value": {
+            "notes": {
+              "$": "record-update",
+              "collection": "notes",
+              "identity": "id",
+              "key": {
+                "$": "ref",
+                "path": "input.id"
+              },
+              "maximum": 10000,
+              "changes": {
+                "markdown": {
+                  "$": "ref",
+                  "path": "input.markdown"
+                },
+                "tags": {
+                  "$": "ref",
+                  "path": "input.tags"
+                },
+                "taskId": {
+                  "$": "ref",
+                  "path": "input.taskId"
+                },
+                "taskInstanceId": {
+                  "$": "ref",
+                  "path": "input.taskInstanceId"
+                },
+                "taskPluginIdentity": {
+                  "$": "ref",
+                  "path": "input.taskPluginIdentity"
+                },
+                "title": {
+                  "$": "ref",
+                  "path": "input.title"
+                },
+                "changed": {
+                  "$": "if",
+                  "condition": {
+                    "$": "and",
+                    "values": [
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.current.markdown"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.markdown"
+                        }
+                      },
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.current.tags"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.tags"
+                        }
+                      },
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.current.taskId"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.taskId"
+                        }
+                      },
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.current.taskInstanceId"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.taskInstanceId"
+                        }
+                      },
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.current.taskPluginIdentity"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.taskPluginIdentity"
+                        }
+                      },
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.current.title"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.title"
+                        }
+                      }
+                    ]
+                  },
+                  "then": {
+                    "$": "ref",
+                    "path": "local.current.changed"
+                  },
+                  "else": {
+                    "$": "ref",
+                    "path": "mutation.instant"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "record-select",
+            "collection": "notes",
+            "identity": "id",
+            "key": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "maximum": 10000
+          }
+        }
+      ]
+    },
+    "delete": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "id": "string"
+        }
+      },
+      "resultType": "null",
+      "expectedFailures": ["resource-deleted"],
+      "steps": [
+        {
+          "kind": "set-local",
+          "id": "prepare-record-change",
+          "name": "changedNotes",
+          "value": {
+            "$": "record-delete",
+            "collection": "notes",
+            "identity": "id",
+            "key": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "maximum": 10000
+          }
+        },
+        {
+          "id": "check-resource-deleted",
+          "kind": "branch",
+          "condition": {
+            "$": "equals",
+            "left": {
+              "$": "ref",
+              "path": "local.changedNotes"
+            },
+            "right": null
+          },
+          "then": [
+            {
+              "id": "resource-deleted",
+              "kind": "return",
+              "outcome": "failed",
+              "code": "resource-deleted"
+            }
+          ],
+          "else": []
+        },
+        {
+          "id": "save-notes",
+          "kind": "commit-state",
+          "value": {
+            "notes": {
+              "$": "ref",
+              "path": "local.changedNotes"
+            }
+          }
+        },
+        {
+          "id": "show-notes",
+          "kind": "observe",
+          "observation": {
+            "kind": "notes",
+            "value": {
+              "$": "ref",
+              "path": "state.notes"
+            }
+          }
+        },
+        {
+          "id": "return-note",
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": null
+        }
+      ]
+    },
+    "addTag": {
+      "requestType": "TagRequest",
+      "resultType": "Note",
+      "expectedFailures": ["resource-deleted", "invalid-tag", "tag-limit"],
+      "steps": [
+        {
+          "kind": "set-local",
+          "name": "current",
+          "value": {
+            "$": "record-select",
+            "collection": "notes",
+            "identity": "id",
+            "key": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "maximum": 10000
+          }
+        },
+        {
+          "id": "check-resource-deleted",
+          "kind": "branch",
+          "condition": {
+            "$": "equals",
+            "left": {
+              "$": "record-select",
+              "collection": "notes",
+              "identity": "id",
+              "key": {
+                "$": "ref",
+                "path": "input.id"
+              },
+              "maximum": 10000
+            },
+            "right": null
+          },
+          "then": [
+            {
+              "id": "resource-deleted",
+              "kind": "return",
+              "outcome": "failed",
+              "code": "resource-deleted"
+            }
+          ],
+          "else": []
+        },
+        {
+          "id": "check-invalid-tag",
+          "kind": "branch",
+          "condition": {
+            "$": "equals",
+            "left": {
+              "$": "trim",
+              "value": {
+                "$": "ref",
+                "path": "input.tag"
+              }
+            },
+            "right": ""
+          },
+          "then": [
+            {
+              "id": "invalid-tag",
+              "kind": "return",
+              "outcome": "failed",
+              "code": "invalid-tag"
+            }
+          ],
+          "else": []
+        },
+        {
+          "id": "check-tag-limit",
+          "kind": "branch",
+          "condition": {
+            "$": "and",
+            "values": [
+              {
+                "$": "not",
+                "value": {
+                  "$": "any",
+                  "source": {
+                    "$": "ref",
+                    "path": "local.current.tags"
+                  },
+                  "item": "tag",
+                  "predicate": {
+                    "$": "equals",
+                    "left": {
+                      "$": "ref",
+                      "path": "local.tag"
+                    },
+                    "right": {
+                      "$": "trim",
+                      "value": {
+                        "$": "ref",
+                        "path": "input.tag"
+                      }
+                    }
+                  },
+                  "maximum": 32
+                }
+              },
+              {
+                "$": "not",
+                "value": {
+                  "$": "equals",
+                  "left": {
+                    "$": "take",
+                    "source": {
+                      "$": "ref",
+                      "path": "local.current.tags"
+                    },
+                    "count": 31,
+                    "maximum": 10000
+                  },
+                  "right": {
+                    "$": "ref",
+                    "path": "local.current.tags"
+                  }
+                }
+              }
+            ]
+          },
+          "then": [
+            {
+              "id": "tag-limit",
+              "kind": "return",
+              "outcome": "failed",
+              "code": "tag-limit"
+            }
+          ],
+          "else": []
+        },
+        {
+          "id": "updated-note",
+          "kind": "set-local",
+          "name": "updated",
+          "value": {
+            "id": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "markdown": {
+              "$": "ref",
+              "path": "local.current.markdown"
+            },
+            "tags": {
+              "$": "if",
+              "condition": {
+                "$": "any",
+                "source": {
+                  "$": "ref",
+                  "path": "local.current.tags"
+                },
+                "item": "tag",
+                "predicate": {
+                  "$": "equals",
+                  "left": {
+                    "$": "ref",
+                    "path": "local.tag"
+                  },
+                  "right": {
+                    "$": "trim",
+                    "value": {
+                      "$": "ref",
+                      "path": "input.tag"
+                    }
+                  }
+                },
+                "maximum": 32
+              },
+              "then": {
+                "$": "ref",
+                "path": "local.current.tags"
+              },
+              "else": {
+                "$": "prepend",
+                "value": {
+                  "$": "trim",
+                  "value": {
+                    "$": "ref",
+                    "path": "input.tag"
+                  }
+                },
+                "source": {
+                  "$": "ref",
+                  "path": "local.current.tags"
+                },
+                "maximum": 32
+              }
+            },
+            "taskId": {
+              "$": "ref",
+              "path": "local.current.taskId"
+            },
+            "taskInstanceId": {
+              "$": "ref",
+              "path": "local.current.taskInstanceId"
+            },
+            "taskPluginIdentity": {
+              "$": "ref",
+              "path": "local.current.taskPluginIdentity"
+            },
+            "title": {
+              "$": "ref",
+              "path": "local.current.title"
+            },
+            "changed": {
+              "$": "if",
+              "condition": {
+                "$": "equals",
+                "left": {
+                  "$": "if",
+                  "condition": {
+                    "$": "any",
+                    "source": {
+                      "$": "ref",
+                      "path": "local.current.tags"
+                    },
+                    "item": "tag",
+                    "predicate": {
+                      "$": "equals",
+                      "left": {
+                        "$": "ref",
+                        "path": "local.tag"
+                      },
+                      "right": {
+                        "$": "trim",
+                        "value": {
+                          "$": "ref",
+                          "path": "input.tag"
+                        }
+                      }
+                    },
+                    "maximum": 32
+                  },
+                  "then": {
+                    "$": "ref",
+                    "path": "local.current.tags"
+                  },
+                  "else": {
+                    "$": "prepend",
+                    "value": {
+                      "$": "trim",
+                      "value": {
+                        "$": "ref",
+                        "path": "input.tag"
+                      }
+                    },
+                    "source": {
+                      "$": "ref",
+                      "path": "local.current.tags"
+                    },
+                    "maximum": 32
+                  }
+                },
+                "right": {
+                  "$": "ref",
+                  "path": "local.current.tags"
+                }
+              },
+              "then": {
+                "$": "ref",
+                "path": "local.current.changed"
+              },
+              "else": {
+                "$": "ref",
+                "path": "mutation.instant"
+              }
+            }
+          }
+        },
+        {
+          "id": "save-notes",
+          "kind": "commit-state",
+          "value": {
+            "notes": {
+              "$": "record-update",
+              "collection": "notes",
+              "identity": "id",
+              "key": {
+                "$": "ref",
+                "path": "input.id"
+              },
+              "maximum": 10000,
+              "changes": {
+                "$": "ref",
+                "path": "local.updated"
+              }
+            }
+          }
+        },
+        {
+          "id": "show-notes",
+          "kind": "observe",
+          "observation": {
+            "kind": "notes",
+            "value": {
+              "$": "ref",
+              "path": "state.notes"
+            }
+          }
+        },
+        {
+          "id": "return-note",
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "ref",
+            "path": "local.updated"
+          }
+        }
+      ]
+    },
+    "removeTag": {
+      "requestType": "TagRequest",
+      "resultType": "Note",
+      "expectedFailures": ["resource-deleted", "invalid-tag"],
+      "steps": [
+        {
+          "kind": "set-local",
+          "name": "current",
+          "value": {
+            "$": "record-select",
+            "collection": "notes",
+            "identity": "id",
+            "key": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "maximum": 10000
+          }
+        },
+        {
+          "id": "check-resource-deleted",
+          "kind": "branch",
+          "condition": {
+            "$": "equals",
+            "left": {
+              "$": "record-select",
+              "collection": "notes",
+              "identity": "id",
+              "key": {
+                "$": "ref",
+                "path": "input.id"
+              },
+              "maximum": 10000
+            },
+            "right": null
+          },
+          "then": [
+            {
+              "id": "resource-deleted",
+              "kind": "return",
+              "outcome": "failed",
+              "code": "resource-deleted"
+            }
+          ],
+          "else": []
+        },
+        {
+          "id": "check-invalid-tag",
+          "kind": "branch",
+          "condition": {
+            "$": "equals",
+            "left": {
+              "$": "trim",
+              "value": {
+                "$": "ref",
+                "path": "input.tag"
+              }
+            },
+            "right": ""
+          },
+          "then": [
+            {
+              "id": "invalid-tag",
+              "kind": "return",
+              "outcome": "failed",
+              "code": "invalid-tag"
+            }
+          ],
+          "else": []
+        },
+        {
+          "id": "updated-note",
+          "kind": "set-local",
+          "name": "updated",
+          "value": {
+            "id": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "markdown": {
+              "$": "ref",
+              "path": "local.current.markdown"
+            },
+            "tags": {
+              "$": "filter",
+              "source": {
+                "$": "ref",
+                "path": "local.current.tags"
+              },
+              "item": "tag",
+              "predicate": {
+                "$": "not",
+                "value": {
+                  "$": "equals",
+                  "left": {
+                    "$": "ref",
+                    "path": "local.tag"
+                  },
+                  "right": {
+                    "$": "trim",
+                    "value": {
+                      "$": "ref",
+                      "path": "input.tag"
+                    }
+                  }
+                }
+              },
+              "maximum": 32
+            },
+            "taskId": {
+              "$": "ref",
+              "path": "local.current.taskId"
+            },
+            "taskInstanceId": {
+              "$": "ref",
+              "path": "local.current.taskInstanceId"
+            },
+            "taskPluginIdentity": {
+              "$": "ref",
+              "path": "local.current.taskPluginIdentity"
+            },
+            "title": {
+              "$": "ref",
+              "path": "local.current.title"
+            },
+            "changed": {
+              "$": "if",
+              "condition": {
+                "$": "equals",
+                "left": {
+                  "$": "filter",
+                  "source": {
+                    "$": "ref",
+                    "path": "local.current.tags"
+                  },
+                  "item": "tag",
+                  "predicate": {
+                    "$": "not",
+                    "value": {
+                      "$": "equals",
+                      "left": {
+                        "$": "ref",
+                        "path": "local.tag"
+                      },
+                      "right": {
+                        "$": "trim",
+                        "value": {
+                          "$": "ref",
+                          "path": "input.tag"
+                        }
+                      }
+                    }
+                  },
+                  "maximum": 32
+                },
+                "right": {
+                  "$": "ref",
+                  "path": "local.current.tags"
+                }
+              },
+              "then": {
+                "$": "ref",
+                "path": "local.current.changed"
+              },
+              "else": {
+                "$": "ref",
+                "path": "mutation.instant"
+              }
+            }
+          }
+        },
+        {
+          "id": "save-notes",
+          "kind": "commit-state",
+          "value": {
+            "notes": {
+              "$": "record-update",
+              "collection": "notes",
+              "identity": "id",
+              "key": {
+                "$": "ref",
+                "path": "input.id"
+              },
+              "maximum": 10000,
+              "changes": {
+                "$": "ref",
+                "path": "local.updated"
+              }
+            }
+          }
+        },
+        {
+          "id": "show-notes",
+          "kind": "observe",
+          "observation": {
+            "kind": "notes",
+            "value": {
+              "$": "ref",
+              "path": "state.notes"
+            }
+          }
+        },
+        {
+          "id": "return-note",
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "ref",
+            "path": "local.updated"
+          }
+        }
+      ]
+    },
+    "createFromMarkdown": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "title": "string",
+          "markdown": "string"
+        }
+      },
+      "resultType": "Note",
+      "expectedFailures": ["note-limit"],
+      "steps": [
+        {
+          "kind": "branch",
+          "condition": {
+            "$": "not",
+            "value": {
+              "$": "equals",
+              "left": {
+                "$": "take",
+                "source": {
+                  "$": "ref",
+                  "path": "state.notes"
+                },
+                "count": 9999,
+                "maximum": 10000
+              },
+              "right": {
+                "$": "ref",
+                "path": "state.notes"
+              }
+            }
+          },
+          "then": [
+            {
+              "kind": "return",
+              "outcome": "failed",
+              "code": "note-limit"
+            }
+          ],
+          "else": []
+        },
+        {
+          "kind": "set-local",
+          "name": "created",
+          "value": {
+            "id": {
+              "$": "ref",
+              "path": "mutation.identity"
+            },
+            "title": {
+              "$": "ref",
+              "path": "input.title"
+            },
+            "tags": [],
+            "changed": {
+              "$": "ref",
+              "path": "mutation.instant"
+            },
+            "markdown": {
+              "$": "ref",
+              "path": "input.markdown"
+            },
+            "taskId": null,
+            "taskInstanceId": null,
+            "taskPluginIdentity": null
+          }
+        },
+        {
+          "kind": "commit-state",
+          "value": {
+            "notes": {
+              "$": "prepend",
+              "value": {
+                "$": "ref",
+                "path": "local.created"
+              },
+              "source": {
+                "$": "ref",
+                "path": "state.notes"
+              },
+              "maximum": 10000
+            }
+          }
+        },
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "ref",
+            "path": "local.created"
+          }
+        }
+      ]
+    },
+    "query": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "search": "string",
+          "cursor": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "limit": "integer",
+          "filters": {
+            "kind": "object",
+            "members": {
+              "taskId": {
+                "kind": "optional",
+                "value": {
+                  "kind": "array",
+                  "items": "string",
+                  "maximum": 64
+                }
+              },
+              "tags": {
+                "kind": "optional",
+                "value": {
+                  "kind": "array",
+                  "items": "string",
+                  "maximum": 64
+                }
+              }
+            }
+          }
+        }
+      },
+      "resultType": {
+        "kind": "object",
+        "members": {
+          "records": {
+            "kind": "array",
+            "items": "Note",
+            "maximum": 50
+          },
+          "cursor": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "complete": "boolean"
+        }
+      },
+      "steps": [
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "collection-query",
+            "collection": "notes"
+          }
+        }
+      ]
+    },
+    "saveMarkdown": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "id": "string",
+          "markdown": "string"
+        }
+      },
+      "resultType": "Note",
+      "expectedFailures": ["resource-deleted"],
+      "steps": [
+        {
+          "kind": "set-local",
+          "name": "current",
+          "value": {
+            "$": "record-select",
+            "collection": "notes",
+            "identity": "id",
+            "key": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "maximum": 10000
+          }
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "$": "equals",
+            "left": {
+              "$": "ref",
+              "path": "local.current"
+            },
+            "right": null
+          },
+          "then": [
+            {
+              "kind": "return",
+              "outcome": "failed",
+              "code": "resource-deleted"
+            }
+          ],
+          "else": []
+        },
+        {
+          "kind": "commit-state",
+          "value": {
+            "notes": {
+              "$": "record-update",
+              "collection": "notes",
+              "identity": "id",
+              "key": {
+                "$": "ref",
+                "path": "input.id"
+              },
+              "maximum": 10000,
+              "changes": {
+                "markdown": {
+                  "$": "ref",
+                  "path": "input.markdown"
+                },
+                "changed": {
+                  "$": "if",
+                  "condition": {
+                    "$": "and",
+                    "values": [
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.current.markdown"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.markdown"
+                        }
+                      }
+                    ]
+                  },
+                  "then": {
+                    "$": "ref",
+                    "path": "local.current.changed"
+                  },
+                  "else": {
+                    "$": "ref",
+                    "path": "mutation.instant"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "record-select",
+            "collection": "notes",
+            "identity": "id",
+            "key": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "maximum": 10000
+          }
+        }
+      ]
+    },
+    "setTaskReference": {
+      "requestType": {
+        "kind": "object",
+        "members": {
+          "id": "string",
+          "taskId": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "taskInstanceId": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "taskPluginIdentity": {
+            "kind": "optional",
+            "value": "string"
+          }
+        }
+      },
+      "resultType": "Note",
+      "expectedFailures": ["resource-deleted"],
+      "steps": [
+        {
+          "kind": "set-local",
+          "name": "current",
+          "value": {
+            "$": "record-select",
+            "collection": "notes",
+            "identity": "id",
+            "key": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "maximum": 10000
+          }
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "$": "equals",
+            "left": {
+              "$": "ref",
+              "path": "local.current"
+            },
+            "right": null
+          },
+          "then": [
+            {
+              "kind": "return",
+              "outcome": "failed",
+              "code": "resource-deleted"
+            }
+          ],
+          "else": []
+        },
+        {
+          "kind": "commit-state",
+          "value": {
+            "notes": {
+              "$": "record-update",
+              "collection": "notes",
+              "identity": "id",
+              "key": {
+                "$": "ref",
+                "path": "input.id"
+              },
+              "maximum": 10000,
+              "changes": {
+                "taskId": {
+                  "$": "ref",
+                  "path": "input.taskId"
+                },
+                "taskInstanceId": {
+                  "$": "ref",
+                  "path": "input.taskInstanceId"
+                },
+                "taskPluginIdentity": {
+                  "$": "ref",
+                  "path": "input.taskPluginIdentity"
+                },
+                "changed": {
+                  "$": "if",
+                  "condition": {
+                    "$": "and",
+                    "values": [
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.current.taskId"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.taskId"
+                        }
+                      },
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.current.taskInstanceId"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.taskInstanceId"
+                        }
+                      },
+                      {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "local.current.taskPluginIdentity"
+                        },
+                        "right": {
+                          "$": "ref",
+                          "path": "input.taskPluginIdentity"
+                        }
+                      }
+                    ]
+                  },
+                  "then": {
+                    "$": "ref",
+                    "path": "local.current.changed"
+                  },
+                  "else": {
+                    "$": "ref",
+                    "path": "mutation.instant"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "kind": "return",
+          "outcome": "succeeded",
+          "value": {
+            "$": "record-select",
+            "collection": "notes",
+            "identity": "id",
+            "key": {
+              "$": "ref",
+              "path": "input.id"
+            },
+            "maximum": 10000
+          }
+        }
+      ]
+    }
+  },
+  "catalog": {
+    "categories": ["productivity"],
+    "license": "MIT",
+    "supportLink": "https://github.com/bsafronov/prosto-designer/issues",
+    "tags": ["markdown", "notes", "writing"],
+    "description": "catalog.description",
+    "displayName": "catalog.displayName",
+    "releaseNotes": "catalog.releaseNotes",
+    "summary": "catalog.summary"
+  },
+  "contributions": {
+    "commands": {
+      "exportMarkdown": {
+        "operation": "exportMarkdown",
+        "title": "command.export"
+      },
+      "importMarkdown": {
+        "operation": "importMarkdown",
+        "title": "command.import"
+      }
+    }
+  },
+  "id": "prosto/notes",
+  "localization": {
+    "en": {
+      "command.export": "Export Markdown note",
+      "command.import": "Import Markdown note",
+      "field.markdown": "Markdown",
+      "field.tags": "Tags",
+      "field.taskId": "Task",
+      "field.taskInstanceId": "Task list",
+      "field.taskPluginIdentity": "Task plugin",
+      "field.title": "Title",
+      "view.activity.label": "Open Notes",
+      "view.activity.title": "Notes",
+      "view.all.create": "New note",
+      "view.all.empty": "No notes yet.",
+      "view.all.label": "All Notes and tags",
+      "view.all.search": "Search notes",
+      "view.all.tags": "Tags",
+      "view.all.title": "All Notes",
+      "view.editor.empty": "Choose or create a note.",
+      "view.editor.label": "Markdown note editor",
+      "view.editor.title": "Note",
+      "name": "Notes",
+      "interactions.all.title": "All Notes",
+      "interactions.all.nodes.notes.label": "Notes",
+      "interactions.all.nodes.create.label": "New note",
+      "interactions.all.nodes.openMarkdown.label": "Open Markdown copy",
+      "interactions.all.nodes.addImported.label": "Add imported note",
+      "interactions.editor.title": "Note",
+      "interactions.editor.nodes.back.label": "All Notes",
+      "interactions.editor.nodes.title.label": "Title",
+      "interactions.editor.nodes.markdown.label": "Markdown",
+      "interactions.editor.nodes.taskPluginIdentity.label": "Task plugin",
+      "interactions.editor.nodes.taskInstanceId.label": "Task list",
+      "interactions.editor.nodes.taskId.label": "Task",
+      "interactions.editor.nodes.tags.label": "Tags",
+      "interactions.editor.nodes.save.label": "Save note",
+      "interactions.editor.nodes.saved.label": "Saved note",
+      "interactions.editor.nodes.tag.label": "Tag to add or remove",
+      "interactions.editor.nodes.addTag.label": "Add tag",
+      "interactions.editor.nodes.removeTag.label": "Remove tag",
+      "interactions.editor.nodes.delete.label": "Delete note",
+      "interactions.editor.nodes.exportMarkdown.label": "Export Markdown note",
+      "catalog.description": "Notes keeps Markdown content inside its Profile-owned data, supports fast search and tags, and exchanges individual Markdown files only after explicit file review.",
+      "catalog.displayName": "Notes",
+      "catalog.releaseNotes": "Adds explicit resource selection, revision-checked saves and portable note actions.",
+      "catalog.summary": "Write tagged Markdown notes and connect them to Tasks.",
+      "collections.notes.id": "Identity",
+      "collections.notes.markdown": "Markdown",
+      "collections.notes.tags": "Tags",
+      "collections.notes.taskId": "Task",
+      "collections.notes.taskInstanceId": "Task instance",
+      "collections.notes.taskPluginIdentity": "Task Plugin",
+      "collections.notes.title": "Title",
+      "collections.notes.changed": "Changed",
+      "collections.notes.label": "Notes",
+      "records.tags.empty": "No tags"
+    },
+    "ru": {
+      "command.export": "Экспортировать заметку Markdown",
+      "command.import": "Импортировать заметку Markdown",
+      "field.markdown": "Markdown",
+      "field.tags": "Теги",
+      "field.taskId": "Задача",
+      "field.taskInstanceId": "Список задач",
+      "field.taskPluginIdentity": "Плагин задач",
+      "field.title": "Название",
+      "view.activity.label": "Открыть заметки",
+      "view.activity.title": "Заметки",
+      "view.all.create": "Новая заметка",
+      "view.all.empty": "Заметок пока нет.",
+      "view.all.label": "Все заметки и теги",
+      "view.all.search": "Поиск заметок",
+      "view.all.tags": "Теги",
+      "view.all.title": "Все заметки",
+      "view.editor.empty": "Выберите или создайте заметку.",
+      "view.editor.label": "Редактор заметок Markdown",
+      "view.editor.title": "Заметка",
+      "name": "Заметки",
+      "interactions.all.title": "Все заметки",
+      "interactions.all.nodes.notes.label": "Заметки",
+      "interactions.all.nodes.create.label": "Новая заметка",
+      "interactions.all.nodes.openMarkdown.label": "Открыть копию Markdown",
+      "interactions.all.nodes.addImported.label": "Добавить импортированную заметку",
+      "interactions.editor.title": "Заметка",
+      "interactions.editor.nodes.back.label": "Все заметки",
+      "interactions.editor.nodes.title.label": "Название",
+      "interactions.editor.nodes.markdown.label": "Markdown",
+      "interactions.editor.nodes.taskPluginIdentity.label": "Плагин задач",
+      "interactions.editor.nodes.taskInstanceId.label": "Список задач",
+      "interactions.editor.nodes.taskId.label": "Задача",
+      "interactions.editor.nodes.tags.label": "Теги",
+      "interactions.editor.nodes.save.label": "Сохранить заметку",
+      "interactions.editor.nodes.saved.label": "Сохранённая заметка",
+      "interactions.editor.nodes.tag.label": "Тег для добавления или удаления",
+      "interactions.editor.nodes.addTag.label": "Добавить тег",
+      "interactions.editor.nodes.removeTag.label": "Удалить тег",
+      "interactions.editor.nodes.delete.label": "Удалить заметку",
+      "interactions.editor.nodes.exportMarkdown.label": "Экспортировать заметку Markdown",
+      "catalog.description": "Заметки хранят Markdown в данных профиля, поддерживают быстрый поиск и теги. Обмен отдельными файлами Markdown требует явного просмотра файла.",
+      "catalog.displayName": "Заметки",
+      "catalog.releaseNotes": "Добавлены явный выбор ресурса, сохранение с проверкой версии и переносимые действия с заметками.",
+      "catalog.summary": "Пишите заметки Markdown с тегами и связывайте их с задачами.",
+      "collections.notes.id": "Идентификатор",
+      "collections.notes.markdown": "Markdown",
+      "collections.notes.tags": "Теги",
+      "collections.notes.taskId": "Задача",
+      "collections.notes.taskInstanceId": "Экземпляр задач",
+      "collections.notes.taskPluginIdentity": "Плагин задач",
+      "collections.notes.title": "Название",
+      "collections.notes.changed": "Изменено",
+      "collections.notes.label": "Заметки",
+      "records.tags.empty": "Нет тегов"
+    }
+  },
+  "multiplicity": "many",
+  "name": "name",
+  "state": {
+    "notes": {
+      "default": [],
+      "type": {
+        "items": "Note",
+        "kind": "array",
+        "maximum": 10000
+      }
+    }
+  },
+  "version": "1.2.0",
+  "interactions": {
+    "all": {
+      "role": "work",
+      "feature": "prosto/resource-interaction",
+      "title": "interactions.all.title",
+      "source": {
+        "collection": "notes"
+      },
+      "nodes": {
+        "openMarkdown": {
+          "kind": "invoke",
+          "label": "interactions.all.nodes.openMarkdown.label",
+          "action": "importMarkdown",
+          "bindings": {
+            "value": {
+              "source": "preset",
+              "value": null
+            }
+          }
+        },
+        "addImported": {
+          "kind": "invoke",
+          "label": "interactions.all.nodes.addImported.label",
+          "action": "createFromMarkdown",
+          "bindings": {
+            "title": {
+              "source": "invocation",
+              "invocation": "openMarkdown",
+              "field": "fileName"
+            },
+            "markdown": {
+              "source": "invocation",
+              "invocation": "openMarkdown",
+              "field": "content"
+            }
+          },
+          "commit": {
+            "collection": "notes"
+          },
+          "onSucceeded": {
+            "destination": "editor",
+            "resource": {
+              "source": "result",
+              "field": "id"
+            }
+          }
+        }
+      },
+      "capability": {
+        "kind": "operation"
+      }
+    },
+    "editor": {
+      "role": "work",
+      "feature": "prosto/resource-interaction",
+      "title": "interactions.editor.title",
+      "resource": {
+        "collection": "notes",
+        "identity": "id",
+        "title": "title"
+      },
+      "nodes": {
+        "markdown": {
+          "kind": "input",
+          "label": "interactions.editor.nodes.markdown.label",
+          "type": "string",
+          "initial": {
+            "source": "resource",
+            "field": "markdown"
+          },
+          "format": "markdown"
+        },
+        "taskPluginIdentity": {
+          "kind": "input",
+          "label": "interactions.editor.nodes.taskPluginIdentity.label",
+          "type": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "initial": {
+            "source": "resource",
+            "field": "taskPluginIdentity"
+          }
+        },
+        "taskInstanceId": {
+          "kind": "input",
+          "label": "interactions.editor.nodes.taskInstanceId.label",
+          "type": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "initial": {
+            "source": "resource",
+            "field": "taskInstanceId"
+          }
+        },
+        "taskId": {
+          "kind": "input",
+          "label": "interactions.editor.nodes.taskId.label",
+          "type": {
+            "kind": "optional",
+            "value": "string"
+          },
+          "initial": {
+            "source": "resource",
+            "field": "taskId"
+          }
+        },
+        "tags": {
+          "kind": "resource",
+          "label": "interactions.editor.nodes.tags.label",
+          "field": "tags"
+        },
+        "tag": {
+          "kind": "input",
+          "label": "interactions.editor.nodes.tag.label",
+          "type": "string"
+        },
+        "addTag": {
+          "kind": "invoke",
+          "label": "interactions.editor.nodes.addTag.label",
+          "action": "addTag",
+          "bindings": {
+            "tag": {
+              "source": "input",
+              "input": "tag"
+            },
+            "id": {
+              "source": "resource",
+              "field": "id"
+            }
+          },
+          "commit": {
+            "collection": "notes"
+          },
+          "collectionAction": {
+            "collection": "notes",
+            "action": "addTag"
+          }
+        },
+        "removeTag": {
+          "kind": "invoke",
+          "label": "interactions.editor.nodes.removeTag.label",
+          "action": "removeTag",
+          "bindings": {
+            "tag": {
+              "source": "input",
+              "input": "tag"
+            },
+            "id": {
+              "source": "resource",
+              "field": "id"
+            }
+          },
+          "commit": {
+            "collection": "notes"
+          },
+          "collectionAction": {
+            "collection": "notes",
+            "action": "removeTag"
+          }
+        },
+        "exportMarkdown": {
+          "kind": "invoke",
+          "label": "interactions.editor.nodes.exportMarkdown.label",
+          "action": "exportMarkdown",
+          "bindings": {
+            "content": {
+              "source": "resource",
+              "field": "markdown"
+            },
+            "fileName": {
+              "source": "preset",
+              "value": "note.md"
+            },
+            "mediaType": {
+              "source": "preset",
+              "value": "text/markdown"
+            }
+          }
+        },
+        "saveMarkdown": {
+          "kind": "invoke",
+          "label": "interactions.editor.nodes.save.label",
+          "action": "saveMarkdown",
+          "bindings": {
+            "id": {
+              "source": "resource",
+              "field": "id"
+            },
+            "markdown": {
+              "source": "input",
+              "input": "markdown"
+            }
+          },
+          "commit": {
+            "collection": "notes"
+          }
+        },
+        "setTaskReference": {
+          "kind": "invoke",
+          "label": "interactions.editor.nodes.save.label",
+          "action": "setTaskReference",
+          "bindings": {
+            "id": {
+              "source": "resource",
+              "field": "id"
+            },
+            "taskId": {
+              "source": "input",
+              "input": "taskId"
+            },
+            "taskInstanceId": {
+              "source": "input",
+              "input": "taskInstanceId"
+            },
+            "taskPluginIdentity": {
+              "source": "input",
+              "input": "taskPluginIdentity"
+            }
+          },
+          "commit": {
+            "collection": "notes"
+          }
+        }
+      },
+      "capability": {
+        "kind": "document",
+        "content": "markdown",
+        "save": "saveMarkdown"
+      }
+    }
+  },
+  "defaultLanguage": "en",
+  "types": {
+    "Note": {
+      "kind": "object",
+      "members": {
+        "id": "string",
+        "markdown": "string",
+        "tags": {
+          "items": "string",
+          "kind": "array",
+          "maximum": 32,
+          "constraint": "label-set"
+        },
+        "taskId": {
+          "kind": "optional",
+          "value": "string"
+        },
+        "taskInstanceId": {
+          "kind": "optional",
+          "value": "string"
+        },
+        "taskPluginIdentity": {
+          "kind": "optional",
+          "value": "string"
+        },
+        "title": "string",
+        "changed": {
+          "kind": "instant"
+        }
+      }
+    },
+    "TagRequest": {
+      "kind": "object",
+      "members": {
+        "id": "string",
+        "tag": "string"
+      }
+    },
+    "NoteUpdate": {
+      "kind": "object",
+      "members": {
+        "id": "string",
+        "markdown": "string",
+        "tags": {
+          "items": "string",
+          "kind": "array",
+          "maximum": 32,
+          "constraint": "label-set"
+        },
+        "taskId": {
+          "kind": "optional",
+          "value": "string"
+        },
+        "taskInstanceId": {
+          "kind": "optional",
+          "value": "string"
+        },
+        "taskPluginIdentity": {
+          "kind": "optional",
+          "value": "string"
+        },
+        "title": "string"
+      }
+    }
+  },
+  "collections": {
+    "notes": {
+      "presentation": {
+        "title": {
+          "field": "title"
+        },
+        "mainText": {
+          "field": "markdown"
+        },
+        "metadata": [
+          {
+            "kind": "label-set",
+            "field": "tags",
+            "empty": {
+              "message": "records.tags.empty"
+            }
+          }
+        ]
+      },
+      "label": "collections.notes.label",
+      "recordType": "Note",
+      "fields": {
+        "id": {
+          "label": "collections.notes.id",
+          "generated": true,
+          "immutable": true
+        },
+        "markdown": {
+          "label": "collections.notes.markdown",
+          "searchable": true
+        },
+        "tags": {
+          "label": "collections.notes.tags",
+          "searchable": true,
+          "filterable": true,
+          "meaning": "prosto.record.tag"
+        },
+        "taskId": {
+          "label": "collections.notes.taskId",
+          "filterable": true,
+          "meaning": "prosto.task.identity"
+        },
+        "taskInstanceId": {
+          "label": "collections.notes.taskInstanceId"
+        },
+        "taskPluginIdentity": {
+          "label": "collections.notes.taskPluginIdentity"
+        },
+        "title": {
+          "label": "collections.notes.title",
+          "searchable": true
+        },
+        "changed": {
+          "label": "collections.notes.changed",
+          "generated": true,
+          "immutable": true
+        }
+      },
+      "identity": "id",
+      "activityTime": "changed",
+      "title": "title",
+      "source": "notes",
+      "pageSize": 50,
+      "open": "editor",
+      "query": {
+        "action": "query",
+        "expectedFailures": []
+      },
+      "create": {
+        "action": "create",
+        "requestType": {
+          "kind": "object",
+          "members": {
+            "title": "string",
+            "markdown": "string"
+          }
+        },
+        "resultType": "Note",
+        "expectedFailures": ["note-limit"]
+      },
+      "update": {
+        "action": "save",
+        "requestType": "NoteUpdate",
+        "resultType": "Note",
+        "expectedFailures": ["resource-deleted"]
+      },
+      "delete": {
+        "action": "delete",
+        "requestType": {
+          "kind": "object",
+          "members": {
+            "id": "string"
+          }
+        },
+        "resultType": "null",
+        "expectedFailures": ["resource-deleted"]
+      },
+      "actions": {
+        "addTag": {
+          "action": "addTag",
+          "requestType": "TagRequest",
+          "resultType": "Note",
+          "expectedFailures": ["resource-deleted", "invalid-tag", "tag-limit"],
+          "label": "interactions.editor.nodes.addTag.label",
+          "intent": "change",
+          "inputFields": {
+            "tag": {
+              "label": "interactions.editor.nodes.tag.label"
+            }
+          }
+        },
+        "removeTag": {
+          "action": "removeTag",
+          "requestType": "TagRequest",
+          "resultType": "Note",
+          "expectedFailures": ["resource-deleted", "invalid-tag"],
+          "label": "interactions.editor.nodes.removeTag.label",
+          "intent": "change",
+          "inputFields": {
+            "tag": {
+              "label": "interactions.editor.nodes.tag.label"
+            }
+          }
+        }
+      }
+    }
+  }
+}

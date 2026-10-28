@@ -1,0 +1,650 @@
+{
+  "actions": {
+    "refresh": {
+      "expectedFailures": [
+        "location-not-found",
+        "service-unavailable",
+        "invalid-response"
+      ],
+      "lifecycleScope": "activation",
+      "resultType": "Forecast",
+      "steps": [
+        {
+          "id": "refresh-loading",
+          "kind": "observe",
+          "observation": {
+            "kind": "loading"
+          }
+        },
+        {
+          "effect": {
+            "identity": "forecast",
+            "kind": "input"
+          },
+          "id": "forecast-provider",
+          "input": {
+            "location": {
+              "$": "ref",
+              "path": "config.location"
+            },
+            "temperatureUnit": {
+              "$": "ref",
+              "path": "config.temperatureUnit"
+            }
+          },
+          "kind": "effect",
+          "onFailures": {
+            "invalid-response": [
+              {
+                "condition": {
+                  "$": "and",
+                  "values": [
+                    {
+                      "$": "not",
+                      "value": {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "state.cache"
+                        },
+                        "right": null
+                      }
+                    },
+                    {
+                      "$": "equals",
+                      "left": {
+                        "$": "ref",
+                        "path": "state.cacheKey"
+                      },
+                      "right": {
+                        "location": {
+                          "$": "ref",
+                          "path": "config.location"
+                        },
+                        "temperatureUnit": {
+                          "$": "ref",
+                          "path": "config.temperatureUnit"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "else": [],
+                "id": "invalid-cache-match",
+                "kind": "branch",
+                "then": [
+                  {
+                    "id": "invalid-mark-stale",
+                    "kind": "commit-state",
+                    "value": {
+                      "cache": {
+                        "$": "ref",
+                        "path": "state.cache"
+                      },
+                      "cacheKey": {
+                        "$": "ref",
+                        "path": "state.cacheKey"
+                      },
+                      "stale": true
+                    }
+                  },
+                  {
+                    "id": "invalid-show-stale",
+                    "kind": "observe",
+                    "observation": {
+                      "kind": "forecast",
+                      "stale": true,
+                      "value": {
+                        "$": "ref",
+                        "path": "state.cache"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "invalid-failure",
+                "kind": "observe",
+                "observation": {
+                  "code": "invalid-response",
+                  "kind": "failure"
+                }
+              },
+              {
+                "code": "invalid-response",
+                "id": "invalid-return",
+                "kind": "return",
+                "outcome": "failed"
+              }
+            ],
+            "location-not-found": [
+              {
+                "condition": {
+                  "$": "and",
+                  "values": [
+                    {
+                      "$": "not",
+                      "value": {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "state.cache"
+                        },
+                        "right": null
+                      }
+                    },
+                    {
+                      "$": "equals",
+                      "left": {
+                        "$": "ref",
+                        "path": "state.cacheKey"
+                      },
+                      "right": {
+                        "location": {
+                          "$": "ref",
+                          "path": "config.location"
+                        },
+                        "temperatureUnit": {
+                          "$": "ref",
+                          "path": "config.temperatureUnit"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "else": [],
+                "id": "location-cache-match",
+                "kind": "branch",
+                "then": [
+                  {
+                    "id": "location-mark-stale",
+                    "kind": "commit-state",
+                    "value": {
+                      "cache": {
+                        "$": "ref",
+                        "path": "state.cache"
+                      },
+                      "cacheKey": {
+                        "$": "ref",
+                        "path": "state.cacheKey"
+                      },
+                      "stale": true
+                    }
+                  },
+                  {
+                    "id": "location-show-stale",
+                    "kind": "observe",
+                    "observation": {
+                      "kind": "forecast",
+                      "stale": true,
+                      "value": {
+                        "$": "ref",
+                        "path": "state.cache"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "location-failure",
+                "kind": "observe",
+                "observation": {
+                  "code": "location-not-found",
+                  "kind": "failure"
+                }
+              },
+              {
+                "code": "location-not-found",
+                "id": "location-return",
+                "kind": "return",
+                "outcome": "failed"
+              }
+            ],
+            "service-unavailable": [
+              {
+                "condition": {
+                  "$": "and",
+                  "values": [
+                    {
+                      "$": "not",
+                      "value": {
+                        "$": "equals",
+                        "left": {
+                          "$": "ref",
+                          "path": "state.cache"
+                        },
+                        "right": null
+                      }
+                    },
+                    {
+                      "$": "equals",
+                      "left": {
+                        "$": "ref",
+                        "path": "state.cacheKey"
+                      },
+                      "right": {
+                        "location": {
+                          "$": "ref",
+                          "path": "config.location"
+                        },
+                        "temperatureUnit": {
+                          "$": "ref",
+                          "path": "config.temperatureUnit"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "else": [],
+                "id": "service-cache-match",
+                "kind": "branch",
+                "then": [
+                  {
+                    "id": "service-mark-stale",
+                    "kind": "commit-state",
+                    "value": {
+                      "cache": {
+                        "$": "ref",
+                        "path": "state.cache"
+                      },
+                      "cacheKey": {
+                        "$": "ref",
+                        "path": "state.cacheKey"
+                      },
+                      "stale": true
+                    }
+                  },
+                  {
+                    "id": "service-show-stale",
+                    "kind": "observe",
+                    "observation": {
+                      "kind": "forecast",
+                      "stale": true,
+                      "value": {
+                        "$": "ref",
+                        "path": "state.cache"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "service-failure",
+                "kind": "observe",
+                "observation": {
+                  "code": "service-unavailable",
+                  "kind": "failure"
+                }
+              },
+              {
+                "code": "service-unavailable",
+                "id": "service-return",
+                "kind": "return",
+                "outcome": "failed"
+              }
+            ]
+          },
+          "onSucceeded": [
+            {
+              "id": "save-forecast",
+              "kind": "commit-state",
+              "value": {
+                "cache": {
+                  "$": "ref",
+                  "path": "local.forecast"
+                },
+                "cacheKey": {
+                  "location": {
+                    "$": "ref",
+                    "path": "config.location"
+                  },
+                  "temperatureUnit": {
+                    "$": "ref",
+                    "path": "config.temperatureUnit"
+                  }
+                },
+                "stale": false
+              }
+            },
+            {
+              "id": "show-forecast",
+              "kind": "observe",
+              "observation": {
+                "kind": "forecast",
+                "stale": false,
+                "value": {
+                  "$": "ref",
+                  "path": "local.forecast"
+                }
+              }
+            },
+            {
+              "id": "refresh-success",
+              "kind": "return",
+              "outcome": "succeeded",
+              "value": {
+                "$": "ref",
+                "path": "local.forecast"
+              }
+            }
+          ],
+          "result": "forecast"
+        }
+      ]
+    },
+    "savedForecast": {
+      "requestType": "null",
+      "resultType": {
+        "kind": "optional",
+        "value": {
+          "kind": "object",
+          "members": {
+            "forecast": "Forecast",
+            "stale": "boolean"
+          }
+        }
+      },
+      "steps": [
+        {
+          "kind": "branch",
+          "condition": {
+            "$": "and",
+            "values": [
+              {
+                "$": "not",
+                "value": {
+                  "$": "equals",
+                  "left": {
+                    "$": "ref",
+                    "path": "state.cache"
+                  },
+                  "right": null
+                }
+              },
+              {
+                "$": "equals",
+                "left": {
+                  "$": "ref",
+                  "path": "state.cacheKey"
+                },
+                "right": {
+                  "location": {
+                    "$": "ref",
+                    "path": "config.location"
+                  },
+                  "temperatureUnit": {
+                    "$": "ref",
+                    "path": "config.temperatureUnit"
+                  }
+                }
+              }
+            ]
+          },
+          "then": [
+            {
+              "kind": "return",
+              "outcome": "succeeded",
+              "value": {
+                "forecast": {
+                  "$": "ref",
+                  "path": "state.cache"
+                },
+                "stale": {
+                  "$": "ref",
+                  "path": "state.stale"
+                }
+              }
+            }
+          ],
+          "else": [
+            {
+              "kind": "return",
+              "outcome": "succeeded",
+              "value": null
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "catalog": {
+    "categories": [
+      "data",
+      "visualization"
+    ],
+    "license": "MIT",
+    "supportLink": "https://github.com/bsafronov/prosto-designer/issues",
+    "tags": [
+      "forecast",
+      "temperature",
+      "weather"
+    ],
+    "description": "catalog.description",
+    "displayName": "catalog.displayName",
+    "releaseNotes": "catalog.releaseNotes",
+    "summary": "catalog.summary"
+  },
+  "contributions": {
+    "attribution": {
+      "message": "attribution.openMeteo",
+      "url": "https://open-meteo.com/"
+    },
+    "commands": {
+      "refresh": {
+        "operation": "refresh",
+        "title": "command.refresh"
+      }
+    }
+  },
+  "id": "prosto/weather",
+  "localization": {
+    "en": {
+      "attribution.openMeteo": "Weather data by Open-Meteo",
+      "command.refresh": "Refresh Weather",
+      "failure.invalidResponse": "Weather service returned invalid data",
+      "failure.locationNotFound": "Location not found",
+      "failure.serviceUnavailable": "Weather service unavailable",
+      "setting.location": "Weather location",
+      "setting.temperatureUnit": "Temperature unit",
+      "name": "Weather",
+      "interactions.forecast.title": "Weather",
+      "interactions.forecast.nodes.refresh.label": "Refresh Weather",
+      "interactions.forecast.nodes.forecast.label": "Weather forecast",
+      "interactions.forecast.nodes.showSaved.label": "Show saved forecast",
+      "interactions.forecast.nodes.saved.label": "Saved forecast and staleness",
+      "catalog.description": "Weather shows current conditions and a five-day forecast from a compatible Provider Plugin. Refresh explicitly or inspect a saved forecast with its staleness. Network access requires exact Capability Approval.",
+      "catalog.displayName": "Weather",
+      "catalog.releaseNotes": "Semantic forecast interactions with explicit refresh and saved forecast inspection. Location and temperature units remain configurable.",
+      "catalog.summary": "Current conditions and a five-day forecast from an approved provider."
+    },
+    "de": {
+      "catalog.description": "Wetter zeigt aktuelle Bedingungen und eine Fünf-Tage-Vorhersage eines kompatiblen Provider Plugins. Aktualisieren Sie die Daten ausdrücklich oder prüfen Sie eine gespeicherte Vorhersage und ihren Aktualitätsstatus.",
+      "catalog.displayName": "Wetter",
+      "catalog.releaseNotes": "Semantische Vorhersageinteraktionen mit ausdrücklicher Aktualisierung und Anzeige gespeicherter Daten. Ort und Temperatureinheit bleiben konfigurierbar.",
+      "catalog.summary": "Aktuelles Wetter und eine Fünf-Tage-Vorhersage eines freigegebenen Providers."
+    },
+    "ru": {
+      "attribution.openMeteo": "Данные погоды предоставлены Open-Meteo",
+      "command.refresh": "Обновить погоду",
+      "failure.invalidResponse": "Сервис погоды вернул некорректные данные",
+      "failure.locationNotFound": "Местоположение не найдено",
+      "failure.serviceUnavailable": "Сервис погоды недоступен",
+      "setting.location": "Местоположение для погоды",
+      "setting.temperatureUnit": "Единица температуры",
+      "name": "Погода",
+      "interactions.forecast.title": "Погода",
+      "interactions.forecast.nodes.refresh.label": "Обновить погоду",
+      "interactions.forecast.nodes.forecast.label": "Прогноз погоды",
+      "interactions.forecast.nodes.showSaved.label": "Показать сохранённый прогноз",
+      "interactions.forecast.nodes.saved.label": "Сохранённый прогноз и его актуальность",
+      "catalog.description": "Погода показывает текущие условия и прогноз на пять дней от совместимого провайдера. Обновляйте данные явно или просматривайте сохранённый прогноз и его актуальность. Сетевой доступ требует точного разрешения возможности.",
+      "catalog.displayName": "Погода",
+      "catalog.releaseNotes": "Семантический интерфейс прогноза с явным обновлением и просмотром сохранённых данных. Местоположение и единицы температуры настраиваются.",
+      "catalog.summary": "Текущая погода и прогноз на пять дней от разрешённого провайдера."
+    }
+  },
+  "name": "name",
+  "settings": {
+    "location": {
+      "default": "Berlin",
+      "layers": [
+        "plugin-default",
+        "instance",
+        "user",
+        "workspace"
+      ],
+      "live": true,
+      "required": true,
+      "scope": "user-or-workspace",
+      "type": "string",
+      "title": "setting.location"
+    },
+    "temperatureUnit": {
+      "default": "celsius",
+      "enum": [
+        "celsius",
+        "fahrenheit"
+      ],
+      "layers": [
+        "plugin-default",
+        "instance",
+        "user",
+        "workspace"
+      ],
+      "live": true,
+      "required": true,
+      "scope": "user-or-workspace",
+      "type": "string",
+      "title": "setting.temperatureUnit"
+    }
+  },
+  "state": {
+    "cache": {
+      "default": null,
+      "type": {
+        "kind": "optional",
+        "value": "Forecast"
+      }
+    },
+    "cacheKey": {
+      "default": null,
+      "type": {
+        "kind": "optional",
+        "value": {
+          "kind": "object",
+          "members": {
+            "location": "string",
+            "temperatureUnit": "string"
+          }
+        }
+      }
+    },
+    "stale": {
+      "default": false,
+      "type": "boolean"
+    }
+  },
+  "version": "1.1.2",
+  "interactions": {
+    "forecast": {
+      "role": "monitor",
+      "feature": "prosto/interaction-composition",
+      "title": "interactions.forecast.title",
+      "nodes": {
+        "refresh": {
+          "kind": "invoke",
+          "label": "interactions.forecast.nodes.refresh.label",
+          "action": "refresh",
+          "bindings": {
+            "value": {
+              "source": "preset",
+              "value": null
+            }
+          }
+        },
+        "forecast": {
+          "kind": "inspect",
+          "label": "interactions.forecast.nodes.forecast.label",
+          "invocation": "refresh"
+        },
+        "showSaved": {
+          "kind": "invoke",
+          "label": "interactions.forecast.nodes.showSaved.label",
+          "action": "savedForecast",
+          "bindings": {
+            "value": {
+              "source": "preset",
+              "value": null
+            }
+          }
+        },
+        "saved": {
+          "kind": "inspect",
+          "label": "interactions.forecast.nodes.saved.label",
+          "invocation": "showSaved"
+        }
+      },
+      "capability": {
+        "kind": "monitor",
+        "values": [
+          "forecast",
+          "saved"
+        ],
+        "refresh": "refresh"
+      }
+    }
+  },
+  "types": {
+    "Forecast": {
+      "kind": "object",
+      "members": {
+        "attribution": "string",
+        "current": {
+          "kind": "object",
+          "members": {
+            "temperature": "number",
+            "weatherCode": "integer"
+          }
+        },
+        "daily": {
+          "items": {
+            "kind": "object",
+            "members": {
+              "date": "string",
+              "maximumTemperature": "number",
+              "minimumTemperature": "number",
+              "weatherCode": "integer"
+            }
+          },
+          "kind": "array",
+          "maximum": 5
+        },
+        "location": "string",
+        "observedAt": "string",
+        "unit": "string"
+      }
+    },
+    "ForecastRequest": {
+      "kind": "object",
+      "members": {
+        "location": "string",
+        "temperatureUnit": "string"
+      }
+    }
+  },
+  "inputs": {
+    "forecast": {
+      "kind": "operation",
+      "requestType": "ForecastRequest",
+      "resultType": "Forecast",
+      "expectedFailures": [
+        "location-not-found",
+        "service-unavailable",
+        "invalid-response"
+      ],
+      "requirement": "required",
+      "purpose": "prosto.weather.forecast"
+    }
+  },
+  "defaultLanguage": "en"
+}
