@@ -1,0 +1,1 @@
+export{t as proposePluginVersion,n as versionForChange}from"./version-proposal-B3tchQPF.js";
